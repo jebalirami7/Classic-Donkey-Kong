@@ -7,7 +7,11 @@ import java.util.Random;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class Partie {
     // Initialize bridges rows
@@ -102,6 +106,8 @@ public class Partie {
             }
         };
         gameLoop.start();
+
+        drawOil(root);
     }
 
     private void updateGame(Group root) {
@@ -128,11 +134,45 @@ public class Partie {
         }
     }
 
-    public Rectangle drawOil() {
+    public Rectangle drawOil(Group root) {
         double x_coord = 4 * App.section_width;
-        double y_coord = 4.5 * App.section_height;
+        double y_coord = App.height - 4.5 * App.section_height;
+
+        // Draw Oil Drum 
         Rectangle oil = new Rectangle(x_coord, y_coord, 2 * App.section_width, 2.5 * App.section_height);
-        
+        oil.setFill(Color.BLUE);   // change color to ckeck its position
+
+        // Draw Oil Draw Reflexions
+        Rectangle oilTop = new Rectangle(x_coord - 0.1 * App.section_width, y_coord, 2.2 * App.section_width, .2 * App.section_height);
+        oilTop.setFill(Color.BLUE);
+        Rectangle oilBottom = new Rectangle(x_coord - 0.1 * App.section_width, y_coord + 2.3 * App.section_height, 2.2 * App.section_width, .2 * App.section_height);
+        oilBottom.setFill(Color.BLUE);
+        Rectangle x = new Rectangle(x_coord + 0.1 * App.section_width, y_coord + .2 * App.section_height, .2 * App.section_width, 2 * App.section_height);
+        x.setFill(Color.LIGHTBLUE);
+        Rectangle y = new Rectangle(x_coord, y_coord + 0.5 * App.section_height, 2 * App.section_width, .2 * App.section_height);
+        y.setFill(Color.LIGHTBLUE);
+        Rectangle z = new Rectangle(x_coord, y_coord + 1.7 * App.section_height, 2 * App.section_width, .2 * App.section_height);
+        z.setFill(Color.LIGHTBLUE);
+
+        // Add Text In The Oil Drum
+        Text oilText = new Text("OIL");
+        oilText.setFont(Font.font("Arial", 30)); 
+        oilText.setFill(Color.LIGHTBLUE);
+
+        // Set the position of the text
+        oilText.setLayoutX(x_coord + 0.4 * App.section_width);
+        oilText.setLayoutY(y_coord + 1.5 * App.section_height);
+
+        // Add The Element To The Scene
+        root.getChildren().addAll(oil, oilTop, oilBottom, x, y, z, oilText);
+
+        // Draw 4 Red Circles
+        for (int i=0; i<4; i++) {
+            Circle circle = new Circle(x_coord + 0.5 * App.section_width + i * 0.4 * App.section_width, y_coord + 2.1 * App.section_height, 3);
+            circle.setFill(Color.RED);
+            root.getChildren().add(circle);
+        }
+
         return oil;
     }
     
