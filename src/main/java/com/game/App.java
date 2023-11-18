@@ -5,10 +5,21 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class App extends Application {
+
+    //Images
+    public static Image barrelImg = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/barrels/barrel.png");
+    public static Image barrel2 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/barrels/barrel2.png");
+    public static Image fireImg = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/fire.png");
+    public static Image dk1 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk1.png");
+    public static Image dk2 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk2.png");
+    public static Image dk3 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk3.png");
+    public static Image peach1 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/peach/peach1.png");
+    public static Image peach2 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/peach/peach2.png");
 
     public static final int width = 1280;
     public static final int height = 960;

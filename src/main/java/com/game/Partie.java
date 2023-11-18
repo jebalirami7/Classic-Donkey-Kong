@@ -9,7 +9,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -19,14 +18,12 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class Partie {
-    // Images
-    ImageView fireImg = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/fire.png");
-    ImageView barrelImgView = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/barrels/barrel.png");
-    ImageView dk = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk2.png");
-    Image barrelImg = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/barrels/barrel.png");
-    Image dk1 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk1.png");
-    Image dk2 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk2.png");
-    Image dk3 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk3.png");
+    // ImageViews
+    ImageView fireImg = new ImageView(App.fireImg);
+    ImageView barrelImg = new ImageView(App.barrelImg);
+    ImageView dk = new ImageView();
+    ImageView peach = new ImageView(App.peach2);
+
 
     // Initialize bridges rows
     private int start_y = App.height - 2 * App.section_height;
@@ -118,7 +115,28 @@ public class Partie {
 
         ladder_objs = lvl1.createLadders(root);
         bridge_objs = lvl1.createBridges(root);
+        
+        // Draw Kong
+        dk.setCache(true);
+        dk.setFitWidth(5 * App.section_height);
+        dk.setFitHeight(5 * App.section_height);
+        dk.setX(3.5 * App.section_width);
+        dk.setY(row6_y - 5.5 * App.section_height);
+        barrelImg.setCache(true);
+        barrelImg.setFitWidth(50);
+        barrelImg.setFitHeight(50);
+        barrelImg.setX(250);
+        barrelImg.setY(260);
 
+        // Draw Peach
+        peach.setCache(true);
+        peach.setFitWidth(2 * App.section_height);
+        peach.setFitHeight(3 * App.section_height);
+        peach.setX(10 * App.section_width);
+        peach.setY(row6_y - 6 * App.section_height);
+        
+        root.getChildren().addAll(barrelImg, dk, peach);
+        
         AnimationTimer gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -127,21 +145,9 @@ public class Partie {
             }
         };
         gameLoop.start();
-
-        // Draw Kong
-        dk.setCache(true);
-        dk.setFitWidth(5 * App.section_height);
-        dk.setFitHeight(5 * App.section_height);
-        dk.setX(3.5 * App.section_width);
-        dk.setY(row6_y - 5.5 * App.section_height);
-        barrelImgView.setCache(true);
-        barrelImgView.setFitWidth(50);
-        barrelImgView.setFitHeight(50);
-        barrelImgView.setX(250);
-        barrelImgView.setY(260);
-        root.getChildren().addAll(barrelImgView, dk);
+        
     }
-
+    
 
     private void updateGame(Group root) {
         if (barrelCount < barrelSpawnTime) {
@@ -152,22 +158,24 @@ public class Partie {
             Barrel barrel = new Barrel(270, 260, root);
             barrels.add(barrel);
         }
-
+        
         for (Barrel barrel : barrels) {
             barrel.checkFall(ladder_objs);
             fireBall = barrel.update(bridge_objs, row1_top, row2_top, row3_top, row4_top, row5_top, oilDrum, fireBall);
         }
-        drawKong(root);
+        animateKong(root);
+        
     }
-
-
+    
+    
     private void renderGame(GraphicsContext gc) {
         gc.setFill(javafx.scene.paint.Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-
+        
         for (Barrel barrel : barrels) {
             barrel.draw();
         }
+
     }
 
 
@@ -176,7 +184,7 @@ public class Partie {
         List<Double> dx = List.of(1.2, 1.2, 2.5, 2.5);
         List<Double> dy = List.of(5.3, 7.6, 7.6, 5.3);
         for(int i=0; i<4 ;i++) {
-            ImageView barrel = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/barrels/barrel2.png");
+            ImageView barrel = new ImageView(App.barrel2);
             barrel.setCache(true);
             barrel.setFitWidth(2 * App.section_width);
             barrel.setFitHeight(2.5 * App.section_height);
@@ -188,30 +196,24 @@ public class Partie {
     }
 
 
-    public void drawKong(Group root) {
+    public void animateKong(Group root) {
         int phaseTime = barrelTime / 4;
-        barrelImgView.setImage(null);
+        dk.setScaleX(1);
+        barrelImg.setImage(null);
         if (barrelSpawnTime - barrelCount > 3 * phaseTime) {
-            System.out.println(barrelSpawnTime + " " + barrelCount + " " + phaseTime);
-            dk.setScaleX(1);
-            dk.setImage(dk2);
+            dk.setImage(App.dk2);
         }
         else if (barrelSpawnTime - barrelCount > 2 * phaseTime) {
-            dk.setScaleX(1);
-            dk.setImage(dk1);
+            dk.setImage(App.dk1);
         }
         else if (barrelSpawnTime - barrelCount > phaseTime) {
-            dk.setScaleX(1);
-            dk.setImage(dk3);
+            dk.setImage(App.dk3);
         }
         else {
             dk.setScaleX(-1);
-            dk.setImage(dk1);
-            barrelImgView.setImage(barrelImg);
-        }
-        
-        
-            
+            dk.setImage(App.dk1);
+            barrelImg.setImage(App.barrelImg);
+        }       
     }
 
 

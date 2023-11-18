@@ -23,7 +23,7 @@ public class Barrel extends Pane {
 
     public Barrel(double x, double y, Group root) {
         // Set up the image and position
-        barrel = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/barrels/barrel.png");
+        barrel = new ImageView(App.barrelImg);
         barrel.setCache(true);
         barrel.setFitWidth(barrelWidth);
         barrel.setFitHeight(barrelWidth);
