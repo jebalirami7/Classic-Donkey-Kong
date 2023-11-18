@@ -93,12 +93,12 @@ public class Barrel extends Pane {
 
     public void checkFall(ArrayList<Ladder> lads) {
         boolean alreadyCollided = false;
-        Rectangle bellow = new Rectangle(this.bottom.getLayoutX(), this.bottom.getLayoutY() + App.section_height);
+        Rectangle below = new Rectangle(this.bottom.getLayoutX(), this.bottom.getLayoutY() + App.section_height);
         for (Ladder lad:lads) {
-            if (this.bottom.getBoundsInParent().intersects(lad.getBody().getBoundsInParent()) && !falling && !checkLad) {
+            if (below.getBoundsInParent().intersects(lad.getBody().getBoundsInParent()) && !falling && !checkLad) {
                 checkLad = true;
                 alreadyCollided = true;
-                if (true) {
+                if (new Random().nextInt(60) == 60) {
                     falling = true;
                     y_change = 4;
                 }
