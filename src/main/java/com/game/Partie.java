@@ -5,13 +5,17 @@ import java.util.List;
 import java.util.Random;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class Partie {
     // Initialize bridges rows
@@ -29,6 +33,8 @@ public class Partie {
     private int row1_top = start_y - 5 * App.slope;
 
     private boolean fireBall = false;
+
+    private int counter = 0;
 
     private int score;
     private int attempts;
@@ -49,6 +55,7 @@ public class Partie {
         this.attempts = 3;
         this.levels = new ArrayList<Level>();
     }
+
 
     void createPartie(Group root, GraphicsContext gc) {
         
@@ -110,7 +117,13 @@ public class Partie {
         drawOil(root);
     }
 
+
     private void updateGame(Group root) {
+        // Set A Counter To Increment Every Second
+        // if (counter < 60)
+        //     counter++;
+        // else counter =0;
+        
         if (barrelCount < barrelSpawnTime) {
             barrelCount++;
         } else {
@@ -125,6 +138,7 @@ public class Partie {
         }
     }
 
+
     private void renderGame(GraphicsContext gc) {
         gc.setFill(javafx.scene.paint.Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
@@ -133,6 +147,7 @@ public class Partie {
             barrel.draw();
         }
     }
+
 
     public Rectangle drawOil(Group root) {
         double x_coord = 4 * App.section_width;
@@ -161,7 +176,7 @@ public class Partie {
 
         // Set the position of the text
         oilText.setLayoutX(x_coord + 0.4 * App.section_width);
-        oilText.setLayoutY(y_coord + 1.5 * App.section_height);
+        oilText.setLayoutY(y_coord + 1.55 * App.section_height);
 
         // Add The Element To The Scene
         root.getChildren().addAll(oil, oilTop, oilBottom, x, y, z, oilText);
@@ -173,6 +188,29 @@ public class Partie {
             root.getChildren().add(circle);
         }
 
+        // Draw Flames On Top Of The Oil Drum
+        ImageView fireImg = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/fire.png");
+        fireImg.setCache(true);
+        fireImg.setFitWidth(2 * App.section_width);
+        fireImg.setFitHeight(App.section_height);
+        root.getChildren().add(fireImg);
+        fireImg.setX(x_coord);
+        fireImg.setY(y_coord - App.section_height);
+
+        Timeline fireTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
+            if (counter < 15 || (counter > 30 && counter < 45)) {
+                fireImg.setScaleX(1);
+            } else {
+                fireImg.setScaleX(-1);
+            }
+            if (counter < 60)
+                counter++;
+            else counter =0;
+        }));
+
+        fireTimeLine.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
+        fireTimeLine.play();
+        
         return oil;
     }
     
