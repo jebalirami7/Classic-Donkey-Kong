@@ -59,6 +59,9 @@ public class Partie {
 
     void createPartie(Group root, GraphicsContext gc) {
         
+        drawOil(root);
+        drawBarrels(root);
+
         // Create level 1 
         Level lvl1 = new Level("LEVEL 1", 120, 
             List.of(
@@ -114,7 +117,6 @@ public class Partie {
         };
         gameLoop.start();
 
-        drawOil(root);
     }
 
 
@@ -145,6 +147,23 @@ public class Partie {
 
         for (Barrel barrel : barrels) {
             barrel.draw();
+        }
+    }
+
+
+    public void drawBarrels(Group root) {
+        // Draw 4 Barrels On The Upper-Left Corner
+        List<Double> dx = List.of(1.2, 1.2, 2.5, 2.5);
+        List<Double> dy = List.of(5.3, 7.6, 7.6, 5.3);
+        for(int i=0; i<4 ;i++) {
+            ImageView barrel = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/barrels/barrel2.png");
+            barrel.setCache(true);
+            barrel.setFitWidth(2 * App.section_width);
+            barrel.setFitHeight(2.5 * App.section_height);
+            barrel.setX(dx.get(i) * App.section_width);
+            barrel.setY(dy.get(i) * App.section_height);
+            barrel.setRotate(90);
+            root.getChildren().add(barrel);
         }
     }
 
