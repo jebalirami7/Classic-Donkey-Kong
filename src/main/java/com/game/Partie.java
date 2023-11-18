@@ -9,6 +9,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -18,6 +19,15 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class Partie {
+    // Images
+    ImageView fireImg = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/fire.png");
+    ImageView barrelImgView = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/barrels/barrel.png");
+    ImageView dk = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk2.png");
+    Image barrelImg = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/barrels/barrel.png");
+    Image dk1 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk1.png");
+    Image dk2 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk2.png");
+    Image dk3 = new Image("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/dk/dk3.png");
+
     // Initialize bridges rows
     private int start_y = App.height - 2 * App.section_height;
     private int row2_y = start_y - 4 * App.section_height;
@@ -43,6 +53,7 @@ public class Partie {
 
     private final int barrelSpawnTime = 3600;
     private int barrelCount = barrelSpawnTime / 2;
+    private int barrelTime = 2000;
     private ArrayList<Bridge> bridge_objs = new ArrayList<Bridge>();
     private ArrayList<Ladder> ladder_objs = new ArrayList<Ladder>();
     private List<Barrel> barrels = new ArrayList<>();
@@ -117,19 +128,27 @@ public class Partie {
         };
         gameLoop.start();
 
+        // Draw Kong
+        dk.setCache(true);
+        dk.setFitWidth(5 * App.section_height);
+        dk.setFitHeight(5 * App.section_height);
+        dk.setX(3.5 * App.section_width);
+        dk.setY(row6_y - 5.5 * App.section_height);
+        barrelImgView.setCache(true);
+        barrelImgView.setFitWidth(50);
+        barrelImgView.setFitHeight(50);
+        barrelImgView.setX(250);
+        barrelImgView.setY(260);
+        root.getChildren().addAll(barrelImgView, dk);
     }
 
 
     private void updateGame(Group root) {
-        // Set A Counter To Increment Every Second
-        // if (counter < 60)
-        //     counter++;
-        // else counter =0;
-        
         if (barrelCount < barrelSpawnTime) {
             barrelCount++;
         } else {
             barrelCount = new Random().nextInt(360, 1200);
+            barrelTime = barrelSpawnTime - barrelCount;
             Barrel barrel = new Barrel(270, 260, root);
             barrels.add(barrel);
         }
@@ -138,6 +157,7 @@ public class Partie {
             barrel.checkFall(ladder_objs);
             fireBall = barrel.update(bridge_objs, row1_top, row2_top, row3_top, row4_top, row5_top, oilDrum, fireBall);
         }
+        drawKong(root);
     }
 
 
@@ -165,6 +185,33 @@ public class Partie {
             barrel.setRotate(90);
             root.getChildren().add(barrel);
         }
+    }
+
+
+    public void drawKong(Group root) {
+        int phaseTime = barrelTime / 4;
+        barrelImgView.setImage(null);
+        if (barrelSpawnTime - barrelCount > 3 * phaseTime) {
+            System.out.println(barrelSpawnTime + " " + barrelCount + " " + phaseTime);
+            dk.setScaleX(1);
+            dk.setImage(dk2);
+        }
+        else if (barrelSpawnTime - barrelCount > 2 * phaseTime) {
+            dk.setScaleX(1);
+            dk.setImage(dk1);
+        }
+        else if (barrelSpawnTime - barrelCount > phaseTime) {
+            dk.setScaleX(1);
+            dk.setImage(dk3);
+        }
+        else {
+            dk.setScaleX(-1);
+            dk.setImage(dk1);
+            barrelImgView.setImage(barrelImg);
+        }
+        
+        
+            
     }
 
 
@@ -208,7 +255,6 @@ public class Partie {
         }
 
         // Draw Flames On Top Of The Oil Drum
-        ImageView fireImg = new ImageView("file:/home/rami/Desktop/donkey-kong/src/main/resources/assets/images/fire.png");
         fireImg.setCache(true);
         fireImg.setFitWidth(2 * App.section_width);
         fireImg.setFitHeight(App.section_height);
@@ -216,6 +262,7 @@ public class Partie {
         fireImg.setX(x_coord);
         fireImg.setY(y_coord - App.section_height);
 
+        // Set A Counter To Increment Every Second        
         Timeline fireTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
             if (counter < 15 || (counter > 30 && counter < 45)) {
                 fireImg.setScaleX(1);
