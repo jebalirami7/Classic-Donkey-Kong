@@ -67,6 +67,7 @@ public class Partie {
 
     void createPartie(Group root, GraphicsContext gc) {
         
+        // Draw Extras
         drawOil(root);
         drawBarrels(root);
 
@@ -115,7 +116,7 @@ public class Partie {
 
         ladder_objs = lvl1.createLadders(root);
         bridge_objs = lvl1.createBridges(root);
-        
+
         // Draw Kong
         dk.setCache(true);
         dk.setFitWidth(5 * App.section_height);
@@ -125,37 +126,40 @@ public class Partie {
         barrelImg.setCache(true);
         barrelImg.setFitWidth(50);
         barrelImg.setFitHeight(50);
-        barrelImg.setX(250);
-        barrelImg.setY(260);
+        barrelImg.setX(230);
+        barrelImg.setY(250);
 
         // Draw Peach
         peach.setCache(true);
         peach.setFitWidth(2 * App.section_height);
         peach.setFitHeight(3 * App.section_height);
         peach.setX(10 * App.section_width);
-        peach.setY(row6_y - 6 * App.section_height);
+        peach.setY(row6_y - 6 * App.section_height - App.slope);
         
         root.getChildren().addAll(barrelImg, dk, peach);
         
         AnimationTimer gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                updateGame(root);
-                renderGame(gc);
+                renderGame(gc, root);
             }
         };
         gameLoop.start();
         
     }
     
+    
+    private void renderGame(GraphicsContext gc, Group root) {
+        // Draw Background
+        gc.setFill(javafx.scene.paint.Color.BLACK);
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
-    private void updateGame(Group root) {
         if (barrelCount < barrelSpawnTime) {
             barrelCount++;
         } else {
             barrelCount = new Random().nextInt(360, 1200);
             barrelTime = barrelSpawnTime - barrelCount;
-            Barrel barrel = new Barrel(270, 260, root);
+            Barrel barrel = new Barrel(270, 250, root);
             barrels.add(barrel);
         }
         
@@ -164,14 +168,6 @@ public class Partie {
             fireBall = barrel.update(bridge_objs, row1_top, row2_top, row3_top, row4_top, row5_top, oilDrum, fireBall);
         }
         animateKong(root);
-        
-    }
-    
-    
-    private void renderGame(GraphicsContext gc) {
-        gc.setFill(javafx.scene.paint.Color.BLACK);
-        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        
         for (Barrel barrel : barrels) {
             barrel.rotate();
         }
@@ -182,7 +178,7 @@ public class Partie {
     public void drawBarrels(Group root) {
         // Draw 4 Barrels On The Upper-Left Corner
         List<Double> dx = List.of(1.2, 1.2, 2.5, 2.5);
-        List<Double> dy = List.of(5.3, 7.6, 7.6, 5.3);
+        List<Double> dy = List.of(5.4, 7.7, 7.7, 5.4);
         for(int i=0; i<4 ;i++) {
             ImageView barrel = new ImageView(App.barrel2);
             barrel.setCache(true);

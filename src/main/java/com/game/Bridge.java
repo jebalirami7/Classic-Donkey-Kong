@@ -26,7 +26,7 @@ public class Bridge {
         Color color = Color.rgb(225, 51, 129);
 
         for(int i=0; i<this.length; i++) {
-            double bot_coord = this.y_pos + App.section_width;
+            double bot_coord = this.y_pos + App.section_height;
             double left_coord = this.x_pos + (App.section_width * i);
             double mid_coord = left_coord + (App.section_width / 2);
             double right_coord = left_coord + App.section_width;

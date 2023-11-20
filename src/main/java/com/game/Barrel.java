@@ -11,7 +11,8 @@ import javafx.scene.shape.Rectangle;
 
 public class Barrel extends Pane {
     private ImageView barrel;
-    private int barrelWidth = 50;
+    private double barrelWidth = 50;
+    private double barrelHeight = 50;
     private double x_change;
     private double y_change;
     private double pos = 0;
@@ -26,11 +27,11 @@ public class Barrel extends Pane {
         barrel = new ImageView(App.barrelImg);
         barrel.setCache(true);
         barrel.setFitWidth(barrelWidth);
-        barrel.setFitHeight(barrelWidth);
+        barrel.setFitHeight(barrelHeight);
         barrel.setX(x);
         barrel.setY(y);
         root.getChildren().add(barrel);
-        this.bottom = new Rectangle(barrelWidth, barrelWidth);
+        this.bottom = new Rectangle(barrelWidth, barrelHeight);
         this.bottom.setLayoutX(x);
         this.bottom.setLayoutY(y);
         this.bottom.setFill(Color.TRANSPARENT);
@@ -93,11 +94,12 @@ public class Barrel extends Pane {
 
     public void checkFall(ArrayList<Ladder> lads) {
         boolean alreadyCollided = false;
-        Rectangle below = new Rectangle(this.bottom.getLayoutX(), this.bottom.getLayoutY() + App.section_height - 1);
+        Rectangle below = new Rectangle(this.bottom.getLayoutX(), this.bottom.getLayoutY() );
         for (Ladder lad:lads) {
             if (below.getBoundsInParent().intersects(lad.getBody().getBoundsInParent()) && !falling && !checkLad) {
                 checkLad = true;
                 alreadyCollided = true;
+                // System.out.println(this.bottom.getLayoutX() + " " + this.bottom.getLayoutY());
                 if (new Random().nextInt(1) == 1) {
                     falling = true;
                     y_change = 4;
