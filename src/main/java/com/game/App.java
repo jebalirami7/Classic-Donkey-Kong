@@ -53,9 +53,9 @@ public class App extends Application {
 
     private void run(Group root) {
         while (isRunning) {
-            // Draw Background
-            gc.setFill(Color.BLACK);
-            gc.fillRect(0, 0, width, height);
+            // // Draw Background
+            // gc.setFill(Color.BLACK);
+            // gc.fillRect(0, 0, width, height);
 
             Partie partie = new Partie();
             partie.createPartie(root, gc);

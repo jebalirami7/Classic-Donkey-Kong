@@ -173,7 +173,7 @@ public class Partie {
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         
         for (Barrel barrel : barrels) {
-            barrel.draw();
+            barrel.rotate();
         }
 
     }

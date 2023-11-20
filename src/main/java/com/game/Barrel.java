@@ -27,9 +27,9 @@ public class Barrel extends Pane {
         barrel.setCache(true);
         barrel.setFitWidth(barrelWidth);
         barrel.setFitHeight(barrelWidth);
-        root.getChildren().add(barrel);
         barrel.setX(x);
         barrel.setY(y);
+        root.getChildren().add(barrel);
         this.bottom = new Rectangle(barrelWidth, barrelWidth);
         this.bottom.setLayoutX(x);
         this.bottom.setLayoutY(y);
@@ -93,12 +93,12 @@ public class Barrel extends Pane {
 
     public void checkFall(ArrayList<Ladder> lads) {
         boolean alreadyCollided = false;
-        Rectangle below = new Rectangle(this.bottom.getLayoutX(), this.bottom.getLayoutY() + App.section_height);
+        Rectangle below = new Rectangle(this.bottom.getLayoutX(), this.bottom.getLayoutY() + App.section_height - 1);
         for (Ladder lad:lads) {
             if (below.getBoundsInParent().intersects(lad.getBody().getBoundsInParent()) && !falling && !checkLad) {
                 checkLad = true;
                 alreadyCollided = true;
-                if (new Random().nextInt(60) == 60) {
+                if (new Random().nextInt(1) == 1) {
                     falling = true;
                     y_change = 4;
                 }
@@ -109,7 +109,7 @@ public class Barrel extends Pane {
             checkLad = false;
     }
 
-    public void draw() {
+    public void rotate() {
         // Set the rotation based on the 'pos' variable
         barrel.setRotate(90 * pos);       
     }
