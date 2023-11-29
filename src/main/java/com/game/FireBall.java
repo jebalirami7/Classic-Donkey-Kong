@@ -112,7 +112,7 @@ public class FireBall extends Pane {
                 checkLad = true;
                 alreadyCollided = true;
                 // System.out.println(this.bottom.getLayoutX() + " " + this.bottom.getLayoutY());
-                if (new Random().nextInt(60) == 0) {
+                if (new Random().nextInt(30) == 0) {
                     climbing = true;
                     y_change = -4;
                     fireBall.setY(fireBall.getY() + y_change);
