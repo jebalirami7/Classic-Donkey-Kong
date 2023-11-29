@@ -121,7 +121,7 @@ public class Partie {
             ),
             List.of(
                 List.of(3 * App.section_width, row6_top + App.section_height), 
-                List.of(3 * App.section_width, row2_top + App.section_height)
+                List.of(3 * App.section_width, row4_top + App.section_height)
             )
         );
 
@@ -209,8 +209,6 @@ public class Partie {
         climbingStatus = player.checkClimb(ladder_objs);
 
         keyboardManager(scene, player, climbingStatus.getKey(), climbingStatus.getValue());
-
-        System.out.println(climbingStatus);
         
     }
 
@@ -222,23 +220,23 @@ public class Partie {
                 KeyCode key = e.getCode();
 
                 if ((key == KeyCode.RIGHT || key == KeyCode.D) && !player.isClimbing() ) {
-                    System.out.println("moving right");
+                    // System.out.println("moving right");
                     player.setX_change(1);
                     player.setDir(1);
                 }
                 if ((key == KeyCode.LEFT || key == KeyCode.Q) && !player.isClimbing() ) {
-                    System.out.println("moving left");
+                    // System.out.println("moving left");
                     player.setX_change(-1);
                     player.setDir(-1);
                 }
                 if (key == KeyCode.SPACE && player.isLanded() && !player.getHammer()) {
-                    System.out.println("jumping");
+                    // System.out.println("jumping");
                     player.setLanded(false);
                     player.setY_change(-5.5);
                 }
                 if ((key == KeyCode.UP || key == KeyCode.Z) && !player.getHammer()) {
                     if (climb) {
-                        System.out.println("climbing up");
+                        // System.out.println("climbing up");
                         player.setY_change(-2);
                         player.setX_change(0);
                         player.setClimbing(true);
@@ -246,7 +244,7 @@ public class Partie {
                 }
                 if ((key == KeyCode.DOWN || key == KeyCode.S) && !player.getHammer()) {
                     if (down) {
-                        System.out.println("climbing down");
+                        // System.out.println("climbing down");
                         player.setY_change(2);
                         player.setX_change(0);
                         player.setClimbing(true);
