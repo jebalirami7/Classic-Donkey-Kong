@@ -16,25 +16,36 @@ public class Level {
     private List<List<Integer>> ladders;
     private ArrayList<Ladder> ladder_objs = new ArrayList<Ladder>();
 
-    public Level(String name, int timeLimit, List<List<Integer>> bridges, List<List<Integer>> ladders) {
+    private List<List<Integer>> hammers;
+    private ArrayList<Hammer> hammer_objs = new ArrayList<Hammer>();
+
+    public Level(String name, int timeLimit, List<List<Integer>> bridges, List<List<Integer>> ladders, List<List<Integer>> hammers) {
         this.name = name;
         this.timeLimit = timeLimit;
         this.bridges = bridges;
         this.ladders = ladders;
+        this.hammers = hammers;
     }
 
     ArrayList<Bridge> createBridges(Group root) {
-        for(int i=0; i<bridges.size(); i++) {
-            bridge_objs.add(new Bridge(bridges.get(i).get(0), bridges.get(i).get(1), bridges.get(i).get(2), root));
+        for(List<Integer> bridge : bridges) {
+            bridge_objs.add(new Bridge(bridge.get(0), bridge.get(1), bridge.get(2), root));
         }
         return bridge_objs;
     }
 
     ArrayList<Ladder> createLadders(Group root) {
-        for(int i=0; i<ladders.size(); i++) {
-            ladder_objs.add(new Ladder(ladders.get(i).get(0), ladders.get(i).get(1), ladders.get(i).get(2), root));
+        for(List<Integer> ladder : ladders) {
+            ladder_objs.add(new Ladder(ladder.get(0), ladder.get(1), ladder.get(2), root));
         }
         return ladder_objs;
+    }
+
+    ArrayList<Hammer> createHammers(Group root) {
+        for(List<Integer> hammer : hammers) {
+            hammer_objs.add(new Hammer(hammer.get(0), hammer.get(1), root));
+        }
+        return hammer_objs;
     }
 
 }

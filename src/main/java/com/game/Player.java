@@ -157,14 +157,14 @@ public class Player {
         if (!hammer) {
             hitbox.setX(rect.getLayoutX() + 15);
         }
-        // else if (hammerPos == 0)
-            // if (dir == 1) {
-            //     hitbox.setX(rect.getLayoutX());
-            //     hammerBox.setX(2 * hitbox.getX() + hitbox.getWidth());
-            // } else {
-            //     hitbox.setX(rect.getLayoutX() + 40);
-            //     hammerBox.setX(hitbox.getWidth());
-            // }
+        else if (hammerPos == 0)
+            if (dir == 1) {
+                hitbox.setX(rect.getLayoutX());
+                hammerBox.setX(2 * hitbox.getX() + hitbox.getWidth());
+            } else {
+                hitbox.setX(rect.getLayoutX() + 40);
+                hammerBox.setX(hitbox.getWidth());
+            }
         else {
             hitbox.setX(rect.getLayoutX() + 15);
             hammerBox.setX(hitbox.getX());
