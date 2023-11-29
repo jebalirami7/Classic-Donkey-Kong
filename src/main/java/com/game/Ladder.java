@@ -58,8 +58,14 @@ public class Ladder {
         return body;
     }
 
+    
     public Rectangle getBody() {
         return body;
+    }
+
+
+    public double getLength() {
+        return length;
     }
 
 }
