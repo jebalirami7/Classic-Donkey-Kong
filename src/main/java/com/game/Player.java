@@ -49,11 +49,11 @@ public class Player {
         bottom.setLayoutY(y);
         bottom.setFill(Color.TRANSPARENT);
         root.getChildren().add(bottom);
-        hitbox = new Rectangle(rect.getX() + 15, rect.getY() + 5, rect.getX() + rect.getWidth() - 30, rect.getY() + rect.getHeight() - 10);
+        hitbox = new Rectangle();
         hitbox.setFill(Color.TRANSPARENT);
         root.getChildren().add(hitbox);
-        hammerBox = new Rectangle(hitbox.getX() + hitbox.getX() + hitbox.getWidth(), rect.getY() + 5, hitbox.getX() + hitbox.getWidth(), rect.getY() + rect.getHeight() - 10);
-        hammerBox.setFill(Color.GREEN);
+        hammerBox = new Rectangle();
+        hammerBox.setFill(Color.TRANSPARENT);
         root.getChildren().add(hammerBox);
     }
 
@@ -107,6 +107,8 @@ public class Player {
 
 
     public void draw() {
+        imageHeight = 2.5 * App.section_height;
+        imageWidth = 2 * App.section_width;
         if (!hammer) {
             if (!climbing && landed)
                 if (pos == 0)
@@ -122,11 +124,19 @@ public class Player {
                     image.setImage(App.climbing1);
                 else
                     image.setImage(App.climbing2);
-        } else
-            if (hammerPos == 0)
+        } else {
+            if (hammerPos == 0) {
+                imageWidth = 2.5 * App.section_width;
                 image.setImage(App.hammerJump);
-            else
+            }
+            else {
+                imageHeight = 3 * App.section_height;
                 image.setImage(App.hammerOverhead);
+            }
+        }
+
+        image.setFitWidth(imageWidth);
+        image.setFitHeight(imageHeight);
 
         image.setScaleX(1);
         if (dir == -1)
@@ -150,7 +160,7 @@ public class Player {
         hitbox.setWidth(rect.getWidth() - 30);
         hitbox.setHeight(rect.getHeight() - 10);
 
-        hammerBox.setY(rect.getY() + 5);
+        hammerBox.setY(rect.getLayoutY() + 5);
         hammerBox.setWidth(hitbox.getWidth());
         hammerBox.setHeight(rect.getHeight() - 10);
 
@@ -160,10 +170,10 @@ public class Player {
         else if (hammerPos == 0)
             if (dir == 1) {
                 hitbox.setX(rect.getLayoutX());
-                hammerBox.setX(2 * hitbox.getX() + hitbox.getWidth());
+                hammerBox.setX(hitbox.getX() + hitbox.getWidth());
             } else {
                 hitbox.setX(rect.getLayoutX() + 40);
-                hammerBox.setX(hitbox.getWidth());
+                hammerBox.setX(hitbox.getX() - hitbox.getWidth());
             }
         else {
             hitbox.setX(rect.getLayoutX() + 15);
@@ -247,6 +257,11 @@ public class Player {
 
     public void setHammerLen(int hammerLen) {
         this.hammerLen = hammerLen;
+    }
+
+
+    public boolean getHammer() {
+        return hammer;
     }
 
   
