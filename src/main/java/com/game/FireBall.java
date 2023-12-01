@@ -22,7 +22,7 @@ public class FireBall extends Pane {
     private int count = 0;
     private boolean climbing = false;
     private boolean checkLad = false;
-    private Rectangle bottom;
+    private Rectangle rect;
 
     public FireBall(double x, double y, Group root) {
         // Set up the image and position
@@ -33,11 +33,11 @@ public class FireBall extends Pane {
         fireBall.setX(x);
         fireBall.setY(y);
         root.getChildren().add(fireBall);
-        bottom = new Rectangle(fireBallWidth, fireBallHeight);
-        bottom.setLayoutX(x);
-        bottom.setLayoutY(y);
-        bottom.setFill(Color.TRANSPARENT);
-        root.getChildren().add(bottom);
+        rect = new Rectangle(fireBallWidth, fireBallHeight);
+        rect.setLayoutX(x);
+        rect.setLayoutY(y);
+        rect.setFill(Color.TRANSPARENT);
+        root.getChildren().add(rect);
     }
 
     public void update(ArrayList<Bridge> plats) {
@@ -45,7 +45,7 @@ public class FireBall extends Pane {
             y_change += 0.25;
 
         for(int i=0; i<plats.size(); i++) {
-            if (bottom.getBoundsInParent().intersects(plats.get(i).getTop().getBoundsInParent())) {
+            if (rect.getBoundsInParent().intersects(plats.get(i).getTop().getBoundsInParent())) {
                 y_change = -4;
                 climbing = false;
             }
@@ -96,8 +96,8 @@ public class FireBall extends Pane {
 
         fireBall.setX(fireBall.getX() + x_change);
         fireBall.setY(fireBall.getY() + y_change);
-        bottom.setLayoutX(bottom.getLayoutX() + x_change);
-        bottom.setLayoutY(bottom.getLayoutY() + y_change);
+        rect.setLayoutX(rect.getLayoutX() + x_change);
+        rect.setLayoutY(rect.getLayoutY() + y_change);
         
         // Destroy the fireBall
         // if rect.top > screen_height or rect.top < 0
@@ -105,18 +105,19 @@ public class FireBall extends Pane {
 
     }
 
+
     public void checkFall(ArrayList<Ladder> lads, int row2_y, int row3_y, int row4_y, int row5_y, int row6_y) {
         boolean alreadyCollided = false;
         for (Ladder lad:lads) {
-            if (bottom.getBoundsInParent().intersects(lad.getBody().getBoundsInParent()) && !climbing && !checkLad && lad.getLength() >= 3) {
+            if (rect.getBoundsInParent().intersects(lad.getBody().getBoundsInParent()) && !climbing && !checkLad && lad.getLength() >= 3) {
                 checkLad = true;
                 alreadyCollided = true;
-                // System.out.println(this.bottom.getLayoutX() + " " + this.bottom.getLayoutY());
-                if (new Random().nextInt(30) == 0) {
+                // System.out.println(this.rect.getLayoutX() + " " + this.rect.getLayoutY());
+                if (new Random().nextInt(1) == 0) {
                     climbing = true;
                     y_change = -4;
                     fireBall.setY(fireBall.getY() + y_change);
-                    bottom.setLayoutY(bottom.getLayoutY() + y_change);
+                    rect.setLayoutY(rect.getLayoutY() + y_change);
                 }
             }
         }
@@ -124,18 +125,29 @@ public class FireBall extends Pane {
         if (!alreadyCollided) 
             checkLad = false;
 
-        if (bottom.getLayoutY() + fireBallHeight < row6_y)
+        if (rect.getLayoutY() + fireBallHeight < row6_y)
             row = 6;
-        else if (bottom.getLayoutY() + fireBallHeight < row5_y)
+        else if (rect.getLayoutY() + fireBallHeight < row5_y)
             row = 5;
-        else if (bottom.getLayoutY() + fireBallHeight < row4_y)
+        else if (rect.getLayoutY() + fireBallHeight < row4_y)
             row = 4;
-        else if (bottom.getLayoutY() + fireBallHeight < row3_y)
+        else if (rect.getLayoutY() + fireBallHeight < row3_y)
             row = 3;
-        else if (bottom.getLayoutY() + fireBallHeight < row2_y)
+        else if (rect.getLayoutY() + fireBallHeight < row2_y)
             row = 2;
         else
             row = 1;
     }
+
+
+    public Rectangle getRect() {
+        return rect;
+    }
+
+
+    public void clear(Group root) {
+        root.getChildren().removeAll(fireBall, rect);
+    }
+
 
 }

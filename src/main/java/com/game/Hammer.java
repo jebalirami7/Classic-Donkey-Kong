@@ -39,4 +39,8 @@ public class Hammer {
         }
     }
 
+    public void clear(Group root) {
+        root.getChildren().removeAll(hammer, rect);
+    }
+
 }

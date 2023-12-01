@@ -44,8 +44,6 @@ public class App extends Application {
     
     private GraphicsContext gc;
 
-    private boolean isRunning = true;
-
     @Override
     public void start(Stage stage) throws Exception{
 
@@ -65,13 +63,10 @@ public class App extends Application {
     }
 
     private void run(Group root, Scene scene) {
-        while (isRunning) {
 
-            Partie partie = new Partie();
-            partie.createPartie(root, gc, scene);
+        Partie partie = new Partie();
+        partie.createPartie(root, gc, scene);
 
-            break;
-        }
     }
 
     public static void main(String[] args) {

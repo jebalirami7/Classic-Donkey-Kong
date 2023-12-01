@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
@@ -45,10 +44,19 @@ public class Partie {
 
     private boolean fireBallTrigger = true;
 
+    private int fireCounter = 0;
     private int counter = 0;
 
+    private Level lvl1;
+
     private int score;
+    private int highScore = 0;
+    private int bonus = 6000;
     private int attempts;
+    private int activeLevel = 0;
+    private boolean reset = false;
+    private boolean gameOver = false;
+    Timeline gameTimeLine;
 
     List<Level> levels;
 
@@ -64,6 +72,12 @@ public class Partie {
 
     Pair<Boolean, Boolean> climbingStatus = new Pair<>(false, false);
 
+    Text scoreText = new Text();
+    Text highScoreText = new Text();
+    Text symbolText = new Text();
+    Text columnsText = new Text();
+    Text infoText = new Text();
+    Text gameOverText = new Text();
 
     public Partie() {
         this.score = 0;
@@ -72,14 +86,14 @@ public class Partie {
     }
 
 
-    void createPartie(Group root, GraphicsContext gc, Scene scene) {
+    public void createPartie(Group root, GraphicsContext gc, Scene scene) {
         
         // Draw Extras
         oilDrum = drawOil(root);
         drawBarrels(root);
 
         // Create level 1 
-        Level lvl1 = new Level("LEVEL 1", 120, 
+        lvl1 = new Level("LEVEL 1", 120, 
             List.of(
                 List.of(1, start_y, 15), List.of(16, start_y - App.slope, 3),
                 List.of(19, start_y - 2 * App.slope, 3), List.of(22, start_y - 3 * App.slope, 3),
@@ -148,7 +162,7 @@ public class Partie {
         peach.setX(10 * App.section_width);
         peach.setY(row6_y - 6 * App.section_height - App.slope);
         
-        root.getChildren().addAll(barrelImg, dk, peach);
+        root.getChildren().addAll(barrelImg, dk, peach, scoreText, highScoreText, symbolText, columnsText, infoText, gameOverText);
         
         // AnimationTimer gameLoop = new AnimationTimer() {
             //     @Override
@@ -160,11 +174,20 @@ public class Partie {
                 
         Player player = new Player(7 * App.section_width, App.height - 6 * App.section_height, root);
 
-        Timeline fireTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {renderGame(gc, root, scene, player);}));
-        fireTimeLine.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
-        fireTimeLine.play();
+        gameTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
+            renderGame(gc, root, scene, player);
+            if (gameOver || reset) {
+                gameTimeLine.stop();
+                new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+                    gameTimeLine.playFromStart();
+                    return;
+                })).play();
+                return;
+            }
+        }));
+        gameTimeLine.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
+        gameTimeLine.play();
         
-
     }
     
     
@@ -185,31 +208,111 @@ public class Partie {
         for (Barrel barrel : barrels) {
             // barrel.checkFall(ladder_objs, root);   // feha mochkla sghira
             fireBallTrigger = barrel.update(bridge_objs, row1_top, row2_top, row3_top, row4_top, row5_top, oilDrum);
+            
             if (fireBallTrigger) {
-                barrel.clear();
+                barrel.clear(root);
+                barrels.remove(barrel);
                 FireBall fireBall = new FireBall(5 * App.section_width, App.height - 4 * App.section_height, root);
                 fireBalls.add(fireBall);
                 fireBallTrigger = false;
+            }
+
+            if (barrel.getRect().getBoundsInParent().intersects(player.getHammerBox().getBoundsInParent())) {
+                barrel.clear(root);
+                barrels.remove(barrel);
+                score += 500;
+            }
+
+            if (barrel.getRect().getBoundsInParent().intersects(player.getHitbox().getBoundsInParent())) {
+                resetGame(player, root);
+                return;
             }
         }
 
         for (FireBall fireball : fireBalls) {
             fireball.checkFall(ladder_objs, row2_y, row3_y, row4_y, row5_y, row6_y);
             fireball.update(bridge_objs);
-        }
+            if (fireball.getRect().getBoundsInParent().intersects(player.getHitbox().getBoundsInParent())) 
+                resetGame(player, root);
+                return;
+            }
 
         for (Hammer hammer : hammer_objs) {
             hammer.draw(player);
         }
 
         animateKong(root);
+        drawText();
 
         player.update(bridge_objs);
         player.draw();
         climbingStatus = player.checkClimb(ladder_objs);
 
+        // check if the player is out of the window
+        if (player.getRect().getLayoutX() + player.getRect().getWidth() < 0 || player.getRect().getLayoutX() > App.width || player.getRect().getLayoutY() < 0 || player.getRect().getLayoutY() > App.height) {
+            resetGame(player, root);
+            return;
+        }
+
         keyboardManager(scene, player, climbingStatus.getKey(), climbingStatus.getValue());
+
+        if (counter < 60)
+            counter ++;
+        else {
+            counter = 0;
+            if (bonus > 0)
+                bonus -= 100;
+            else {
+                resetGame(player, root);
+                return;
+            }
+        }
+
+    }
+
+
+    private void resetGame(Player player, Group root) {
+        if (attempts > 1 && !reset) { 
+            reset = true;
+            return;
+        }
+
+        for(Barrel barrel : barrels) {
+            barrel.clear(root);
+        }
+        barrels.clear();
+        for(FireBall fireBall : fireBalls) {
+            fireBall.clear(root);
+        }
+        fireBalls.clear();
+        for (Hammer hammer : hammer_objs) {
+            hammer.clear(root);
+        }
+        hammer_objs.clear();
+
+        highScore = Math.max(highScore, score + bonus);
+        bonus = 6000;
+        score = 0;
         
+        if (attempts > 1) {
+            attempts --;           
+            hammer_objs = lvl1.createHammers(root);
+            player.setPosition(7 * App.section_width, App.height - 6 * App.section_height);
+            fireBallTrigger = false;
+            barrelCount = barrelSpawnTime / 2;
+            reset = false;
+            // victory = false;
+        } else if (attempts == 1) {
+            gameOver = true;
+            attempts --;           
+            drawText();
+            gameOverText.setText("Game Over");
+            gameOverText.setFont(Font.font("Arial", 80)); 
+            gameOverText.setFill(Color.WHITE);
+            gameOverText.setX((App.width - gameOverText.getLayoutBounds().getWidth()) / 2);
+            gameOverText.setY(App.height / 2);
+            player.clear(root);
+        }
     }
 
 
@@ -362,21 +465,61 @@ public class Partie {
         fireImg.setX(x_coord);
         fireImg.setY(y_coord - App.section_height);
 
-        // Set A Counter To Increment Every Second        
+        // Set A fireCounter To Increment Every Second        
         Timeline fireTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
-            if (counter < 15 || (counter > 30 && counter < 45)) {
+            if (fireCounter < 15 || (fireCounter > 30 && fireCounter < 45)) {
                 fireImg.setScaleX(1);
             } else {
                 fireImg.setScaleX(-1);
             }
-            if (counter < 60)
-                counter++;
-            else counter =0;
+            if (fireCounter < 60)
+                fireCounter++;
+            else fireCounter =0;
         }));
         fireTimeLine.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
         fireTimeLine.play();
         
         return oil;
+    }
+
+
+    public void drawText() {
+        Font font = Font.font("Arial", 50);
+        Font font2 = Font.font("Arial", 30);
+
+        scoreText.setText("I•" + score);
+        scoreText.setFont(font); 
+        scoreText.setFill(Color.WHITE);
+        scoreText.setX(3 * App.section_width);
+        scoreText.setY(3 * App.section_height);
+
+        highScoreText.setText("TOP•" + highScore);
+        highScoreText.setFont(font); 
+        highScoreText.setFill(Color.WHITE);
+        highScoreText.setX(14 * App.section_width);
+        highScoreText.setY(3 * App.section_height);
+
+        symbolText.setText("[  ][        ][  ]");
+        symbolText.setFont(font); 
+        symbolText.setFill(Color.WHITE);
+        symbolText.setX(20 * App.section_width);
+        symbolText.setY(5 * App.section_height);
+
+        columnsText.setText("  ♥     BONUS      L ");
+        columnsText.setFont(font2); 
+        columnsText.setFill(Color.WHITE);
+        columnsText.setX(20 * App.section_width + 5);
+        columnsText.setY(4 * App.section_height);
+
+        if (bonus >= 1000)
+            infoText.setText("  " + attempts + "       " + bonus + "        " + (activeLevel + 1));
+        else 
+            infoText.setText("  " + attempts + "         " + bonus + "        " + (activeLevel + 1));
+        infoText.setFont(font2); 
+        infoText.setFill(Color.WHITE);
+        infoText.setX(20 * App.section_width + 5);
+        infoText.setY(5.5 * App.section_height);
+
     }
     
 }

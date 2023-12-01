@@ -24,7 +24,7 @@ public class Barrel extends Pane {
     private boolean oilCollision = false;
     private boolean falling = false;
     private boolean checkLad = false;
-    private Rectangle bottom;
+    private Rectangle rect;
 
     public Barrel(double x, double y, Group root) {
         // Set up the image and position
@@ -35,11 +35,11 @@ public class Barrel extends Pane {
         barrel.setX(x);
         barrel.setY(y);
         root.getChildren().add(barrel);
-        bottom = new Rectangle(barrelWidth, barrelHeight);
-        bottom.setLayoutX(x);
-        bottom.setLayoutY(y);
-        bottom.setFill(Color.TRANSPARENT);
-        root.getChildren().add(bottom);
+        rect = new Rectangle(barrelWidth, barrelHeight);
+        rect.setLayoutX(x);
+        rect.setLayoutY(y);
+        rect.setFill(Color.TRANSPARENT);
+        root.getChildren().add(rect);
     }
 
     public boolean update(ArrayList<Bridge> plats, double row1_top, double row2_top, double row3_top, double row4_top, double row5_top, Rectangle oilDrum) {
@@ -49,24 +49,24 @@ public class Barrel extends Pane {
             y_change += 0.5; //0.02, 1
 
         for(int i=0; i<plats.size(); i++) {
-            if (bottom.getBoundsInParent().intersects(plats.get(i).getTop().getBoundsInParent())) {
+            if (rect.getBoundsInParent().intersects(plats.get(i).getTop().getBoundsInParent())) {
                 y_change = 0;
                 falling = false;
             }
         }
 
-        if (bottom.getBoundsInParent().intersects(oilDrum.getBoundsInParent())) {
+        if (rect.getBoundsInParent().intersects(oilDrum.getBoundsInParent())) {
             if (!oilCollision) {
                 oilCollision = true;
-                if (new Random().nextInt(2) == 0) {
+                if (new Random().nextInt(1) == 0) {
                     fireTrigger = true;
                 }
             }
         }
 
         if (!falling) {
-            double rectBottom = bottom.getLayoutY() + barrelWidth;
-            if (row5_top > rectBottom || (row3_top > rectBottom && rectBottom > row4_top) || (row1_top > rectBottom && rectBottom > row2_top)) {
+            double rectrect = rect.getLayoutY() + barrelWidth;
+            if (row5_top > rectrect || (row3_top > rectrect && rectrect > row4_top) || (row1_top > rectrect && rectrect > row2_top)) {
                 x_change = 3; //0.5, 3
             } else {
                 x_change = -3;
@@ -77,8 +77,8 @@ public class Barrel extends Pane {
 
         barrel.setX(barrel.getX() + x_change);
         barrel.setY(barrel.getY() + y_change);
-        bottom.setLayoutX(bottom.getLayoutX() + x_change);
-        bottom.setLayoutY(bottom.getLayoutY() + y_change);
+        rect.setLayoutX(rect.getLayoutX() + x_change);
+        rect.setLayoutY(rect.getLayoutY() + y_change);
         
         if (count < 15)
             count += 1;
@@ -99,17 +99,12 @@ public class Barrel extends Pane {
         // Rotate the barrel
         barrel.setRotate(90 * pos);  
 
-        // Destroy the barrel
-        // if (bottom.getLayoutY() > App.height) {
-        //     System.out.println("barrel out");
-        // }
-
         return fireTrigger;
     }
 
     public void checkFall(ArrayList<Ladder> lads, Group root) {
         boolean alreadyCollided = false;
-        Line below = new Line(bottom.getLayoutX() + barrelWidth, bottom.getLayoutY() + barrelHeight, bottom.getLayoutX() + barrelWidth, bottom.getLayoutY() + barrelHeight);
+        Line below = new Line(rect.getLayoutX() + barrelWidth, rect.getLayoutY() + barrelHeight, rect.getLayoutX() + barrelWidth, rect.getLayoutY() + barrelHeight);
         below.setStroke(Color.GREEN); 
         below.setStrokeWidth(3);
         root.getChildren().add(below);
@@ -117,10 +112,10 @@ public class Barrel extends Pane {
             if (lad.getLength() >= 3) {
                 Rectangle ladBody = lad.getBody();
                 Line ladTopLine = new Line(ladBody.getX(), ladBody.getY(), ladBody.getX() + App.section_width, ladBody.getY());
-                Line ladBottomLine = new Line(ladBody.getX(), ladBody.getY() + ladBody.getHeight(), ladBody.getX() + App.section_width, ladBody.getY() + ladBody.getHeight());
-                ladBottomLine.setStroke(Color.BLUE); 
-                ladBottomLine.setStrokeWidth(3);
-                root.getChildren().addAll(ladTopLine, ladBottomLine);
+                Line ladrectLine = new Line(ladBody.getX(), ladBody.getY() + ladBody.getHeight(), ladBody.getX() + App.section_width, ladBody.getY() + ladBody.getHeight());
+                ladrectLine.setStroke(Color.BLUE); 
+                ladrectLine.setStrokeWidth(3);
+                root.getChildren().addAll(ladTopLine, ladrectLine);
 
                 // ladBody.setFill(Color.RED);   // change color to ckeck its position
                 
@@ -137,7 +132,7 @@ public class Barrel extends Pane {
                         // barrelFaTimeline.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
                         barrelFaTimeline.play();
                         barrel.setY(barrel.getY() + y_change);
-                        bottom.setLayoutY(bottom.getLayoutY() + y_change);
+                        rect.setLayoutY(rect.getLayoutY() + y_change);
                     }
                 }
             }
@@ -147,8 +142,15 @@ public class Barrel extends Pane {
     }
 
 
-    public void clear() {
-        barrel.setImage(null);
+    public void clear(Group root) {
+        root.getChildren().removeAll(barrel, rect);
     }
+
+    public Rectangle getRect() {
+        return rect;
+    }
+
+    
+    
 
 }

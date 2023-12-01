@@ -27,7 +27,6 @@ public class Player {
     private Rectangle rect;
     private Rectangle hitbox;
     private Rectangle hammerBox;
-    private boolean overBarrel = false;
     private Rectangle bottom;
 
     public Player(double x, double y, Group root) {
@@ -52,12 +51,32 @@ public class Player {
         hitbox = new Rectangle();
         hitbox.setFill(Color.TRANSPARENT);
         root.getChildren().add(hitbox);
-        hammerBox = new Rectangle();
+        hammerBox = new Rectangle(0,0);
         hammerBox.setFill(Color.TRANSPARENT);
         root.getChildren().add(hammerBox);
     }
 
 
+    public void setPosition(double x, double y) {
+        // Set up the image and position
+        image.setX(x);
+        image.setY(y);
+        rect.setLayoutX(x);
+        rect.setLayoutY(y);
+        bottom.setLayoutX(x);
+        bottom.setLayoutY(y);
+        landed = false;
+        climbing = false;
+        hammer = false;
+        dir = 1;
+        pos = 0;
+        count = 0;
+        hammerPos = 1;
+        maxHammer = 450;
+        image.setImage(App.standing);
+    }
+
+    
     public void update(ArrayList<Bridge> plats) {
         landed = false;
 
@@ -160,23 +179,26 @@ public class Player {
         hitbox.setWidth(rect.getWidth() - 30);
         hitbox.setHeight(rect.getHeight() - 10);
 
-        hammerBox.setY(rect.getLayoutY() + 5);
+        hammerBox.setX(0);
+        hammerBox.setY(0);
         hammerBox.setWidth(hitbox.getWidth());
         hammerBox.setHeight(rect.getHeight() - 10);
-
+        
         if (!hammer) {
             hitbox.setX(rect.getLayoutX() + 15);
         }
-        else if (hammerPos == 0)
+        else if (hammerPos == 0) {
+            hammerBox.setY(rect.getLayoutY() + 5);
             if (dir == 1) {
                 hitbox.setX(rect.getLayoutX());
-                hammerBox.setX(hitbox.getX() + hitbox.getWidth());
+                hammerBox.setX(hitbox.getX() + hitbox.getWidth() + 10);
             } else {
                 hitbox.setX(rect.getLayoutX() + 40);
-                hammerBox.setX(hitbox.getX() - hitbox.getWidth());
+                hammerBox.setX(hitbox.getX() - hitbox.getWidth() - 5);
             }
-        else {
+        } else {
             hitbox.setX(rect.getLayoutX() + 15);
+            hammerBox.setY(rect.getLayoutY() + 5);
             hammerBox.setX(hitbox.getX());
             hammerBox.setY(hitbox.getY() - App.section_height);
             hammerBox.setHeight(App.section_height);
@@ -264,9 +286,20 @@ public class Player {
         return hammer;
     }
 
+
+    public Rectangle getHammerBox() {
+        return hammerBox;
+    }
+
   
-    
-    
+    public void clear(Group root) {
+        root.getChildren().removeAll(image, hitbox, bottom, hammerBox, rect);
+    }
+
+
+    public Rectangle getRect() {
+        return rect;
+    }
 
 
 }
