@@ -14,9 +14,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public class Barrel extends Pane {
-    private ImageView barrel;
-    private double barrelWidth = 50;
-    private double barrelHeight = 50;
+    final private ImageView barrel;
+    final private double barrelWidth = 50;
+    final private double barrelHeight = 50;
     private double x_change = 0;
     private double y_change = 0;
     private double pos = 0;

@@ -61,14 +61,8 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
 
-        run(root, scene);
-
-    }
-
-    private void run(Group root, Scene scene) {
-
-        Partie partie = new Partie();
-        partie.createPartie(root, gc, scene);
+        Game game = new Game();
+        game.run(root, gc, scene);
 
     }
 
