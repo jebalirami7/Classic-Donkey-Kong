@@ -56,7 +56,9 @@ public class Partie {
     private int activeLevel = 0;
     private boolean reset = false;
     private boolean gameOver = false;
-    Timeline gameTimeLine;
+    private boolean victory = false;
+    private Rectangle targetRect = new Rectangle();
+    private Timeline gameTimeLine;
 
     List<Level> levels;
 
@@ -78,6 +80,7 @@ public class Partie {
     Text columnsText = new Text();
     Text infoText = new Text();
     Text gameOverText = new Text();
+    Text victoryText = new Text();
 
     public Partie() {
         this.score = 0;
@@ -133,10 +136,12 @@ public class Partie {
                 List.of(18, row6_y - 27 * App.slope, 4), List.of(12, row6_y - 17 * App.slope, 2),
                 List.of(10, row6_y - 17 * App.slope, 2), List.of(12, -5, 13), List.of(10, -5, 13)
             ),
-            List.of(
+            List.of(        
+
                 List.of(3 * App.section_width, row6_top + App.section_height), 
                 List.of(3 * App.section_width, row4_top + App.section_height)
-            )
+            ),
+            List.of(10, row6_y - 5* App.section_height, 5)
         );
 
         ladder_objs = lvl1.createLadders(root);
@@ -161,8 +166,15 @@ public class Partie {
         peach.setFitHeight(3 * App.section_height);
         peach.setX(10 * App.section_width);
         peach.setY(row6_y - 6 * App.section_height - App.slope);
+
+        // Set Victory Position
+        targetRect.setX(lvl1.getTarget().get(0) * App.section_width);
+        targetRect.setY(lvl1.getTarget().get(1));
+        targetRect.setWidth(lvl1.getTarget().get(2) * App.section_width);
+        targetRect.setHeight(50);
         
-        root.getChildren().addAll(barrelImg, dk, peach, scoreText, highScoreText, symbolText, columnsText, infoText, gameOverText);
+        // Add all elements to the root (to be seen)
+        root.getChildren().addAll(barrelImg, dk, peach, scoreText, highScoreText, symbolText, columnsText, infoText, gameOverText, victoryText);
         
         // AnimationTimer gameLoop = new AnimationTimer() {
             //     @Override
@@ -196,6 +208,13 @@ public class Partie {
         gc.setFill(javafx.scene.paint.Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
+        // Check Victory
+        victory = targetRect.getBoundsInParent().intersects(player.getRect().getBoundsInParent());
+        if (victory) {
+            resetGame(player, root);
+            return;
+        }
+
         if (barrelCount < barrelSpawnTime) {
             barrelCount++;
         } else {
@@ -210,11 +229,11 @@ public class Partie {
             fireBallTrigger = barrel.update(bridge_objs, row1_top, row2_top, row3_top, row4_top, row5_top, oilDrum);
             
             if (fireBallTrigger) {
-                barrel.clear(root);
-                barrels.remove(barrel);
                 FireBall fireBall = new FireBall(5 * App.section_width, App.height - 4 * App.section_height, root);
                 fireBalls.add(fireBall);
                 fireBallTrigger = false;
+                barrel.clear(root);
+                barrels.remove(barrel);
             }
 
             if (barrel.getRect().getBoundsInParent().intersects(player.getHammerBox().getBoundsInParent())) {
@@ -272,6 +291,18 @@ public class Partie {
 
 
     private void resetGame(Player player, Group root) {
+        highScore = Math.max(highScore, score + bonus);
+        
+        if (victory) {
+            drawText();
+            victoryText.setText("You Win");
+            victoryText.setFont(Font.font("Arial", 80)); 
+            victoryText.setFill(Color.WHITE);
+            victoryText.setX((App.width - victoryText.getLayoutBounds().getWidth()) / 2);
+            victoryText.setY(App.height / 2);
+            return;
+        }
+
         if (attempts > 1 && !reset) { 
             reset = true;
             return;
@@ -290,7 +321,6 @@ public class Partie {
         }
         hammer_objs.clear();
 
-        highScore = Math.max(highScore, score + bonus);
         bonus = 6000;
         score = 0;
         
@@ -301,7 +331,7 @@ public class Partie {
             fireBallTrigger = false;
             barrelCount = barrelSpawnTime / 2;
             reset = false;
-            // victory = false;
+            victory = false;
         } else if (attempts == 1) {
             gameOver = true;
             attempts --;           
