@@ -1,11 +1,12 @@
 package main.java.com.game.controllers;
 
-import App;
-
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,34 +18,43 @@ import main.java.com.game.App;
 import main.java.com.game.Game;
 import javafx.scene.input.MouseEvent;
 
-public class Controller {
+public class Controller implements Initializable{
 
     private GraphicsContext gc;
 
     @FXML
     private Label newGameLabel;
+    private Label continueLabel;
+    private Label scoreboardLabel;
+    private Label exitLabel;
 
-    private void handleButtonClick(MouseEvent event) {
+    @FXML
+    private void handleNewGameLabelClick(MouseEvent event) {
         // Load the new scene
-        try {
-            Group root = new Group();
-            Canvas canvas = new Canvas(App.width, App.height);
-            root.getChildren().add(canvas);
+        Group root = new Group();
+        Canvas canvas = new Canvas(App.width, App.height);
+        root.getChildren().add(canvas);
 
-            gc = canvas.getGraphicsContext2D();
+        gc = canvas.getGraphicsContext2D();
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Another Scene");
-            stage.show();
+        Stage stage = new Stage();
+        Scene scene = new Scene(root); 
+        stage.setScene(scene);
+        stage.show();
 
-            Scene scene = new Scene(root); 
-
-            Game game = new Game();
-            game.run(root, gc, scene);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Game game = new Game();
+        game.run(root, gc, scene);
+        
     }
+    
+    
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        newGameLabel.setOnMouseClicked(event -> handleNewGameLabelClick(event));
+        // exitLabel.setOnMouseClicked(event -> System.exit(0));
+
+        
+    }
+
+
 }
