@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<Group xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="448.0" fitWidth="907.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../370076778_742043374479205_8647747388527239776_n.png" />
+         </image>
+      </ImageView>
+      <VBox alignment="CENTER" layoutX="204.0" layoutY="178.0" prefHeight="156.0" prefWidth="192.0">
+         <children>
+            <Label fx:id="newGameLabel" text="New Game">
+               <font>
+                  <Font size="31.0" />
+               </font>
+            </Label>
+            <Label text="Continue">
+               <font>
+                  <Font size="31.0" />
+               </font>
+            </Label>
+            <Label text="Scoreboard">
+               <font>
+                  <Font size="31.0" />
+               </font>
+            </Label>
+            <Label text="Exit">
+               <font>
+                  <Font size="31.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+</Group>
