@@ -60,7 +60,7 @@ public class Map {
         drawBarrels(root);
 
         // Create level 1 
-        lvl1 = new Level("LEVEL 1", 120, 
+        lvl1 = new Level("LEVEL 1",
             List.of(
                 List.of(1, start_y, 15), List.of(16, start_y - App.slope, 3),
                 List.of(19, start_y - 2 * App.slope, 3), List.of(22, start_y - 3 * App.slope, 3),

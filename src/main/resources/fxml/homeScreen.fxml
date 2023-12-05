@@ -21,12 +21,12 @@
                   <Font size="31.0" />
                </font>
             </Label>
-            <Label text="Continue">
+            <Label fx:id="continueLabel" text="Continue">
                <font>
                   <Font size="31.0" />
                </font>
             </Label>
-            <Label text="Scoreboard">
+            <Label fx:id="scoreboardLabel" text="Scoreboard">
                <font>
                   <Font size="31.0" />
                </font>

@@ -5,7 +5,6 @@ import java.util.Random;
 
 import javafx.scene.Group;
 import javafx.scene.image.Image;
-import javafx.scene.shape.Rectangle;
 
 public final class FireBall extends Enemy {
     private Image image1 = new Image( "file:src/main/resources/assets/images/fireball.png");

@@ -8,10 +8,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import main.java.com.game.controllers.Controller;
 
 public class App extends Application {
 
@@ -39,7 +37,6 @@ public class App extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/fxml/homeScreen.fxml"));
         Parent root = loader.load();
-        // Controller controller = loader.getController();
 
         Scene scene = new Scene(root); 
         stage.setScene(scene);
