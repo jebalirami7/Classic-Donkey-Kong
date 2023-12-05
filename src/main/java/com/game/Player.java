@@ -3,12 +3,23 @@ package main.java.com.game;
 import java.util.ArrayList;
 
 import javafx.scene.Group;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 
 public class Player {
+    
+    public static Image standing = new Image("file:src/main/resources/assets/images/mario/standing.png");
+    public static Image running = new Image("file:src/main/resources/assets/images/mario/running.png");
+    public static Image jumping = new Image("file:src/main/resources/assets/images/mario/jumping.png");
+    public static Image hammerJump = new Image("file:src/main/resources/assets/images/mario/hammer_jump.png");
+    public static Image hammerStand = new Image("file:src/main/resources/assets/images/mario/hammer_stand.png");
+    public static Image hammerOverhead = new Image("file:src/main/resources/assets/images/mario/hammer_overhead.png");
+    public static Image climbing1 = new Image("file:src/main/resources/assets/images/mario/climbing1.png");
+    public static Image climbing2 = new Image("file:src/main/resources/assets/images/mario/climbing2.png");
+
     private ImageView image;
     private double imageWidth = 2 * App.section_width;
     private double imageHeight = 2.5 * App.section_height;
@@ -31,7 +42,7 @@ public class Player {
 
     public Player(double x, double y, Group root) {
         // Set up the image and position
-        image = new ImageView(App.standing);
+        image = new ImageView(standing);
         image.setCache(true);
         image.setFitWidth(imageWidth);
         image.setFitHeight(imageHeight);
@@ -73,7 +84,7 @@ public class Player {
         count = 0;
         hammerPos = 1;
         maxHammer = 450;
-        image.setImage(App.standing);
+        image.setImage(standing);
     }
 
     
@@ -131,26 +142,26 @@ public class Player {
         if (!hammer) {
             if (!climbing && landed)
                 if (pos == 0)
-                    image.setImage(App.standing);
+                    image.setImage(standing);
                 else
-                    image.setImage(App.running);
+                    image.setImage(running);
 
             if (!landed && !climbing)
-                image.setImage(App.jumping);
+                image.setImage(jumping);
 
             if (climbing)
                 if (pos == 0)
-                    image.setImage(App.climbing1);
+                    image.setImage(climbing1);
                 else
-                    image.setImage(App.climbing2);
+                    image.setImage(climbing2);
         } else {
             if (hammerPos == 0) {
                 imageWidth = 2.5 * App.section_width;
-                image.setImage(App.hammerJump);
+                image.setImage(hammerJump);
             }
             else {
                 imageHeight = 3 * App.section_height;
-                image.setImage(App.hammerOverhead);
+                image.setImage(hammerOverhead);
             }
         }
 

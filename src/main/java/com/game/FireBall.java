@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javafx.scene.Group;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class FireBall extends Pane {
+    public static Image fireImg = new Image("file:src/main/resources/assets/images/fire.png");
+    public static Image fireBallImg = new Image("file:src/main/resources/assets/images/fireball.png");
+    public static Image fireBall2 = new Image("file:src/main/resources/assets/images/fireball2.png");
     private ImageView fireBall;
     private double fireBallWidth = 1.5 * App.section_width;
     private double fireBallHeight = 2 * App.section_height;
@@ -26,7 +30,7 @@ public class FireBall extends Pane {
 
     public FireBall(double x, double y, Group root) {
         // Set up the image and position
-        fireBall = new ImageView(App.fireBallImg);
+        fireBall = new ImageView(fireBallImg);
         fireBall.setCache(true);
         fireBall.setFitWidth(fireBallWidth);
         fireBall.setFitHeight(fireBallHeight);
@@ -76,14 +80,14 @@ public class FireBall extends Pane {
 
         // Animate fireBall movements
         if (pos == 1) {
-            fireBall.setImage(App.fireBallImg);
+            fireBall.setImage(fireBallImg);
             if (x_change > 0) 
                 fireBall.setScaleX(1);
             else
                 fireBall.setScaleX(-1);
         }
         else {
-            fireBall.setImage(App.fireBall2);
+            fireBall.setImage(fireBall2);
             if (x_change > 0)
                 fireBall.setScaleX(1);
             else

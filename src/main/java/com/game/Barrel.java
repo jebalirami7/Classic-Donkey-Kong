@@ -6,6 +6,7 @@ import java.util.Random;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -14,6 +15,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public class Barrel extends Pane {
+    final public static Image barrelImg = new Image( "file:src/main/resources/assets/images/barrels/barrel.png");
     final private ImageView barrel;
     final private double barrelWidth = 50;
     final private double barrelHeight = 50;
@@ -28,7 +30,7 @@ public class Barrel extends Pane {
 
     public Barrel(double x, double y, Group root) {
         // Set up the image and position
-        barrel = new ImageView(App.barrelImg);
+        barrel = new ImageView(barrelImg);
         barrel.setCache(true);
         barrel.setFitWidth(barrelWidth);
         barrel.setFitHeight(barrelHeight);

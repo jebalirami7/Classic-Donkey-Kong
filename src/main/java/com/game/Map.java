@@ -6,6 +6,7 @@ import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -15,10 +16,21 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class Map {
-    private final ImageView fireImg = new ImageView(App.fireImg);
-    private final ImageView barrelImg = new ImageView(App.barrelImg);
+    public static Image peach1 = new Image("file:src/main/resources/assets/images/peach/peach1.png");
+    public static Image peach2 = new Image("file:src/main/resources/assets/images/peach/peach2.png");
+    private final Image dk1 = new Image("file:src/main/resources/assets/images/dk/dk1.png");
+    private final Image dk2 = new Image("file:src/main/resources/assets/images/dk/dk2.png");
+    private final Image dk3 = new Image("file:src/main/resources/assets/images/dk/dk3.png");
+    public static Image barrel2 = new Image("file:src/main/resources/assets/images/barrels/barrel2.png");
+    public static Image fire = new Image("file:src/main/resources/assets/images/fire.png");
+
+    
+    private final ImageView fireImg = new ImageView(fire);
+    private final ImageView barrelImg = new ImageView(Barrel.barrelImg);
     private final ImageView dk = new ImageView();
-    private final ImageView peach = new ImageView(App.peach2);
+    private final ImageView peach = new ImageView(peach2);
+
+
 
     private Level lvl1;
 
@@ -212,7 +224,7 @@ public class Map {
         List<Double> dx = List.of(1.2, 1.2, 2.5, 2.5);
         List<Double> dy = List.of(5.4, 7.7, 7.7, 5.4);
         for(int i=0; i<4 ;i++) {
-            ImageView barrel = new ImageView(App.barrel2);
+            ImageView barrel = new ImageView(barrel2);
             barrel.setCache(true);
             barrel.setFitWidth(2 * App.section_width);
             barrel.setFitHeight(2.5 * App.section_height);
@@ -233,18 +245,18 @@ public class Map {
         dk.setScaleX(1);
         barrelImg.setImage(null);
         if (barrelSpawnTime - barrelCount > 3 * phaseTime) {
-            dk.setImage(App.dk2);
+            dk.setImage(dk2);
         }
         else if (barrelSpawnTime - barrelCount > 2 * phaseTime) {
-            dk.setImage(App.dk1);
+            dk.setImage(dk1);
         }
         else if (barrelSpawnTime - barrelCount > phaseTime) {
-            dk.setImage(App.dk3);
+            dk.setImage(dk3);
         }
         else {
             dk.setScaleX(-1);
-            dk.setImage(App.dk1);
-            barrelImg.setImage(App.barrelImg);
+            dk.setImage(dk1);
+            barrelImg.setImage(Barrel.barrelImg);
         }       
     }
 
