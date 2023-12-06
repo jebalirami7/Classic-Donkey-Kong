@@ -1,6 +1,7 @@
 package main.java.com.game;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -140,21 +141,24 @@ public class Partie {
             barrels.add(barrel);
         }
 
-        for (Barrel barrel : barrels) {
+        Iterator<Barrel> barrelIterator = barrels.iterator();
+        while (barrelIterator.hasNext()) {
+            Barrel barrel = barrelIterator.next();
+
             // barrel.checkFall(ladder_objs, root);   // feha mochkla sghira
             fireBallTrigger = barrel.update(bridge_objs, row1_top, row2_top, row3_top, row4_top, row5_top, map.getOilDrum());
             
             if (fireBallTrigger) {
+                barrelIterator.remove();
+                barrel.clear(root);
                 FireBall fireBall = new FireBall(5 * App.section_width, App.height - 4 * App.section_height, root);
                 fireBalls.add(fireBall);
                 fireBallTrigger = false;
-                barrel.clear(root);
-                barrels.remove(barrel);
             }
 
             if (barrel.getRect().getBoundsInParent().intersects(player.getHammerBox().getBoundsInParent())) {
+                barrelIterator.remove();
                 barrel.clear(root);
-                barrels.remove(barrel);
                 score += 500;
             }
 
