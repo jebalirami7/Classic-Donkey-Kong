@@ -10,15 +10,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 
 public class Player {
-    
-    public static Image standing = new Image("file:src/main/resources/assets/images/mario/standing.png");
-    public static Image running = new Image("file:src/main/resources/assets/images/mario/running.png");
-    public static Image jumping = new Image("file:src/main/resources/assets/images/mario/jumping.png");
-    public static Image hammerJump = new Image("file:src/main/resources/assets/images/mario/hammer_jump.png");
-    public static Image hammerStand = new Image("file:src/main/resources/assets/images/mario/hammer_stand.png");
-    public static Image hammerOverhead = new Image("file:src/main/resources/assets/images/mario/hammer_overhead.png");
-    public static Image climbing1 = new Image("file:src/main/resources/assets/images/mario/climbing1.png");
-    public static Image climbing2 = new Image("file:src/main/resources/assets/images/mario/climbing2.png");
+    public Image standing = new Image("file:src/main/resources/assets/images/mario/standing.png");
+    public Image running = new Image("file:src/main/resources/assets/images/mario/running.png");
+    public Image jumping = new Image("file:src/main/resources/assets/images/mario/jumping.png");
+    public Image climbing1 = new Image("file:src/main/resources/assets/images/mario/climbing1.png");
+    public Image climbing2 = new Image("file:src/main/resources/assets/images/mario/climbing2.png");
+    public Image hammerJump = new Image("file:src/main/resources/assets/images/mario/hammer_jump.png");
+    public Image hammerStand = new Image("file:src/main/resources/assets/images/mario/hammer_stand.png");
+    public Image hammerOverhead = new Image("file:src/main/resources/assets/images/mario/hammer_overhead.png");
 
     private ImageView image;
     private double imageWidth = 2 * App.section_width;

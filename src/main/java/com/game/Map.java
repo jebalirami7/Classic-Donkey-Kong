@@ -16,21 +16,14 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class Map {
-    public static Image peach1 = new Image("file:src/main/resources/assets/images/peach/peach1.png");
-    public static Image peach2 = new Image("file:src/main/resources/assets/images/peach/peach2.png");
-    private final Image dk1 = new Image("file:src/main/resources/assets/images/dk/dk1.png");
-    private final Image dk2 = new Image("file:src/main/resources/assets/images/dk/dk2.png");
-    private final Image dk3 = new Image("file:src/main/resources/assets/images/dk/dk3.png");
-    public static Image barrel2 = new Image("file:src/main/resources/assets/images/barrels/barrel2.png");
-    public static Image fire = new Image("file:src/main/resources/assets/images/fire.png");
+    public Image dk1 = new Image("file:src/main/resources/assets/images/dk/dk1.png");
+    public Image dk2 = new Image("file:src/main/resources/assets/images/dk/dk2.png");
+    public Image dk3 = new Image("file:src/main/resources/assets/images/dk/dk3.png");
 
-    
-    private final ImageView fireImg = new ImageView(fire);
-    private final ImageView barrelImg = new ImageView(Barrel.barrelImg);
+    private final ImageView fireImg = new ImageView(new Image("file:src/main/resources/assets/images/fire.png"));
+    private final ImageView barrelImg = new ImageView();
     private final ImageView dk = new ImageView();
-    private final ImageView peach = new ImageView(peach2);
-
-
+    private final ImageView peach = new ImageView(new Image("file:src/main/resources/assets/images/peach/peach2.png"));
 
     private Level lvl1;
 
@@ -67,7 +60,7 @@ public class Map {
         drawBarrels(root);
 
         // Create level 1 
-        lvl1 = new Level("LEVEL 1", 120, 
+        lvl1 = new Level("LEVEL 1",
             List.of(
                 List.of(1, start_y, 15), List.of(16, start_y - App.slope, 3),
                 List.of(19, start_y - 2 * App.slope, 3), List.of(22, start_y - 3 * App.slope, 3),
@@ -224,7 +217,7 @@ public class Map {
         List<Double> dx = List.of(1.2, 1.2, 2.5, 2.5);
         List<Double> dy = List.of(5.4, 7.7, 7.7, 5.4);
         for(int i=0; i<4 ;i++) {
-            ImageView barrel = new ImageView(barrel2);
+            ImageView barrel = new ImageView(new Image("file:src/main/resources/assets/images/barrels/barrel2.png"));
             barrel.setCache(true);
             barrel.setFitWidth(2 * App.section_width);
             barrel.setFitHeight(2.5 * App.section_height);
@@ -256,7 +249,7 @@ public class Map {
         else {
             dk.setScaleX(-1);
             dk.setImage(dk1);
-            barrelImg.setImage(Barrel.barrelImg);
+            barrelImg.setImage(new Image( "file:src/main/resources/assets/images/barrels/barrel.png"));
         }       
     }
 

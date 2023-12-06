@@ -19,7 +19,7 @@ public class App extends Application {
     public static final int slope = section_height / 8;
 
     public static final double fps = 60;
-    
+   
 
     @Override
     public void start(Stage stage) throws Exception{

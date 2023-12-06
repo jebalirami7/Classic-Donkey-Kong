@@ -1,9 +1,5 @@
 package main.java.com.game.controllers;
 
-
-
-
-
 import java.net.URL;
 import java.util.ResourceBundle;
 

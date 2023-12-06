@@ -7,42 +7,21 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-public class Barrel extends Pane {
-    final public static Image barrelImg = new Image( "file:src/main/resources/assets/images/barrels/barrel.png");
-    final private ImageView barrel;
-    final private double barrelWidth = 50;
-    final private double barrelHeight = 50;
-    private double x_change = 0;
-    private double y_change = 0;
-    private double pos = 0;
-    private int count = 0;
+public final class Barrel extends Enemy {
     private boolean oilCollision = false;
     private boolean falling = false;
-    private boolean checkLad = false;
-    private Rectangle rect;
+
 
     public Barrel(double x, double y, Group root) {
-        // Set up the image and position
-        barrel = new ImageView(barrelImg);
-        barrel.setCache(true);
-        barrel.setFitWidth(barrelWidth);
-        barrel.setFitHeight(barrelHeight);
-        barrel.setX(x);
-        barrel.setY(y);
-        root.getChildren().add(barrel);
-        rect = new Rectangle(barrelWidth, barrelHeight);
-        rect.setLayoutX(x);
-        rect.setLayoutY(y);
-        rect.setFill(Color.TRANSPARENT);
-        root.getChildren().add(rect);
+        super(x, y, 50, 50, 0, root);
+        image.setImage(new Image( "file:src/main/resources/assets/images/barrels/barrel.png"));
     }
+
 
     public boolean update(ArrayList<Bridge> plats, double row1_top, double row2_top, double row3_top, double row4_top, double row5_top, Rectangle oilDrum) {
         boolean fireTrigger = false;
@@ -67,7 +46,7 @@ public class Barrel extends Pane {
         }
 
         if (!falling) {
-            double rectrect = rect.getLayoutY() + barrelWidth;
+            double rectrect = rect.getLayoutY() + width;
             if (row5_top > rectrect || (row3_top > rectrect && rectrect > row4_top) || (row1_top > rectrect && rectrect > row2_top)) {
                 x_change = 3; //0.5, 3
             } else {
@@ -77,8 +56,8 @@ public class Barrel extends Pane {
             x_change = 0;
         }
 
-        barrel.setX(barrel.getX() + x_change);
-        barrel.setY(barrel.getY() + y_change);
+        image.setX(image.getX() + x_change);
+        image.setY(image.getY() + y_change);
         rect.setLayoutX(rect.getLayoutX() + x_change);
         rect.setLayoutY(rect.getLayoutY() + y_change);
         
@@ -99,14 +78,14 @@ public class Barrel extends Pane {
         }
 
         // Rotate the barrel
-        barrel.setRotate(90 * pos);  
+        image.setRotate(90 * pos);  
 
         return fireTrigger;
     }
 
     public void checkFall(ArrayList<Ladder> lads, Group root) {
         boolean alreadyCollided = false;
-        Line below = new Line(rect.getLayoutX() + barrelWidth, rect.getLayoutY() + barrelHeight, rect.getLayoutX() + barrelWidth, rect.getLayoutY() + barrelHeight);
+        Line below = new Line(rect.getLayoutX() + width, rect.getLayoutY() + height, rect.getLayoutX() + width, rect.getLayoutY() + height);
         below.setStroke(Color.GREEN); 
         below.setStrokeWidth(3);
         root.getChildren().add(below);
@@ -124,16 +103,15 @@ public class Barrel extends Pane {
                 if (below.getBoundsInParent().intersects(ladTopLine.getBoundsInParent()) && !falling && !checkLad) {
                     checkLad = true;
                     alreadyCollided = true;
-                    int rand = new Random().nextInt(5);
                     System.out.println(below.getBoundsInParent().intersects(ladBody.getBoundsInParent()));
-                    if (true) {
+                    if (new Random().nextInt(1) == 0) {
                         falling = true;
                         Timeline barrelFaTimeline = new Timeline(new KeyFrame(Duration.millis(5), event -> {
                             y_change += 100;
                         }));
                         // barrelFaTimeline.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
                         barrelFaTimeline.play();
-                        barrel.setY(barrel.getY() + y_change);
+                        image.setY(image.getY() + y_change);
                         rect.setLayoutY(rect.getLayoutY() + y_change);
                     }
                 }
@@ -142,17 +120,6 @@ public class Barrel extends Pane {
             if (!alreadyCollided) 
                checkLad = false;
     }
-
-
-    public void clear(Group root) {
-        root.getChildren().removeAll(barrel, rect);
-    }
-
-    public Rectangle getRect() {
-        return rect;
-    }
-
-    
     
 
 }

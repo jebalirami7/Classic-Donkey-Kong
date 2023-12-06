@@ -5,43 +5,21 @@ import java.util.Random;
 
 import javafx.scene.Group;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
-public class FireBall extends Pane {
-    public static Image fireImg = new Image("file:src/main/resources/assets/images/fire.png");
-    public static Image fireBallImg = new Image("file:src/main/resources/assets/images/fireball.png");
-    public static Image fireBall2 = new Image("file:src/main/resources/assets/images/fireball2.png");
-    private ImageView fireBall;
-    private double fireBallWidth = 1.5 * App.section_width;
-    private double fireBallHeight = 2 * App.section_height;
-    private double x_change = 2;
-    private double y_change = 0;    
+public final class FireBall extends Enemy {
+    private Image image1 = new Image( "file:src/main/resources/assets/images/fireball.png");
+    private Image image2 = new Image( "file:src/main/resources/assets/images/fireball2.png");
+    private double width = 1.5 * App.section_width;
+    private double height = 2 * App.section_height;
     private double x_count = 0;
     private double x_max = 4;
     private double row = 2;
-    private double pos = 1;
-    private int count = 0;
     private boolean climbing = false;
-    private boolean checkLad = false;
-    private Rectangle rect;
 
     public FireBall(double x, double y, Group root) {
-        // Set up the image and position
-        fireBall = new ImageView(fireBallImg);
-        fireBall.setCache(true);
-        fireBall.setFitWidth(fireBallWidth);
-        fireBall.setFitHeight(fireBallHeight);
-        fireBall.setX(x);
-        fireBall.setY(y);
-        root.getChildren().add(fireBall);
-        rect = new Rectangle(fireBallWidth, fireBallHeight);
-        rect.setLayoutX(x);
-        rect.setLayoutY(y);
-        rect.setFill(Color.TRANSPARENT);
-        root.getChildren().add(rect);
+        super(x, y, 2 * App.section_height, 1.5 * App.section_width, 1, root);
+        image.setImage(image1);
+        x_change = 2;
     }
 
     public void update(ArrayList<Bridge> plats) {
@@ -78,32 +56,32 @@ public class FireBall extends Pane {
             }
         }
 
-        // Animate fireBall movements
+        // Animate image movements
         if (pos == 1) {
-            fireBall.setImage(fireBallImg);
+            image.setImage(image1);
             if (x_change > 0) 
-                fireBall.setScaleX(1);
+                image.setScaleX(1);
             else
-                fireBall.setScaleX(-1);
+                image.setScaleX(-1);
         }
         else {
-            fireBall.setImage(fireBall2);
+            image.setImage(image2);
             if (x_change > 0)
-                fireBall.setScaleX(1);
+                image.setScaleX(1);
             else
-                fireBall.setScaleX(-1);
+                image.setScaleX(-1);
         }
 
-        // Make the fireBall turn when it touchs the screen
-        if (fireBall.getX() + fireBallWidth + x_change >= App.width || fireBall.getX() + x_change <= 0)
+        // Make the image turn when it touchs the screen
+        if (image.getX() + width + x_change >= App.width || image.getX() + x_change <= 0)
             x_change *= -1;
 
-        fireBall.setX(fireBall.getX() + x_change);
-        fireBall.setY(fireBall.getY() + y_change);
+        image.setX(image.getX() + x_change);
+        image.setY(image.getY() + y_change);
         rect.setLayoutX(rect.getLayoutX() + x_change);
         rect.setLayoutY(rect.getLayoutY() + y_change);
         
-        // Destroy the fireBall
+        // Destroy the image
         // if rect.top > screen_height or rect.top < 0
         //     kill()
 
@@ -120,7 +98,7 @@ public class FireBall extends Pane {
                 if (new Random().nextInt(1) == 0) {
                     climbing = true;
                     y_change = -4;
-                    fireBall.setY(fireBall.getY() + y_change);
+                    image.setY(image.getY() + y_change);
                     rect.setLayoutY(rect.getLayoutY() + y_change);
                 }
             }
@@ -129,29 +107,18 @@ public class FireBall extends Pane {
         if (!alreadyCollided) 
             checkLad = false;
 
-        if (rect.getLayoutY() + fireBallHeight < row6_y)
+        if (rect.getLayoutY() + height < row6_y)
             row = 6;
-        else if (rect.getLayoutY() + fireBallHeight < row5_y)
+        else if (rect.getLayoutY() + height < row5_y)
             row = 5;
-        else if (rect.getLayoutY() + fireBallHeight < row4_y)
+        else if (rect.getLayoutY() + height < row4_y)
             row = 4;
-        else if (rect.getLayoutY() + fireBallHeight < row3_y)
+        else if (rect.getLayoutY() + height < row3_y)
             row = 3;
-        else if (rect.getLayoutY() + fireBallHeight < row2_y)
+        else if (rect.getLayoutY() + height < row2_y)
             row = 2;
         else
             row = 1;
     }
-
-
-    public Rectangle getRect() {
-        return rect;
-    }
-
-
-    public void clear(Group root) {
-        root.getChildren().removeAll(fireBall, rect);
-    }
-
 
 }
