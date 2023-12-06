@@ -5,11 +5,13 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import main.java.com.game.App;
 import main.java.com.game.Game;
@@ -18,11 +20,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
 
-public class Controller  implements Initializable {
+public class Controller implements Initializable {
 
-
-
-    
     @FXML private VBox container ;
     @FXML private Label newGameLabel;
     @FXML private Label continueLabel;
@@ -38,6 +37,7 @@ public class Controller  implements Initializable {
 
     }
 
+
     @Override
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
@@ -52,9 +52,6 @@ public class Controller  implements Initializable {
     }
 
 
-
-
-
     @FXML
     private void handleKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.UP) {
@@ -66,6 +63,7 @@ public class Controller  implements Initializable {
         }
     }
 
+
     private void moveUP() {
 
         selectedIndex = (selectedIndex -1) ;
@@ -74,6 +72,7 @@ public class Controller  implements Initializable {
         
     }
 
+
     private void moveDOWN() {
         
         selectedIndex = selectedIndex +1 ;
@@ -81,6 +80,7 @@ public class Controller  implements Initializable {
         updateSelection();
         
     }
+
 
     private void updateSelection() {
         for (int i = 0; i < menuItems.length; i++) {
@@ -93,46 +93,46 @@ public class Controller  implements Initializable {
     }
 
     
-    
     @FXML
     private void handleMenuItemAction(int selectedIndex) {
         switch (selectedIndex) {
             case 0:
                 newGame();
                 break;
+
+            case 3:
+                System.exit(0);
         
             default:
                 break;
         }
-        
 
     }
 
-
-
-
-
-
-
-
     
     public void newGame() {
+
         // Load the new scene
+        Group root = new Group();
+        Canvas canvas = new Canvas(App.width, App.height);
+        root.getChildren().add(canvas);
+        GraphicsContext  gc = canvas.getGraphicsContext2D();
+        Scene scene = new Scene(root); 
+
+        Stage stage = (Stage) container.getScene().getWindow();
+        stage.show();
+
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        double centerX = screenBounds.getMinX() + (screenBounds.getWidth() - App.width) / 2;
+        double centerY = screenBounds.getMinY() + (screenBounds.getHeight() - App.height) / 2;
+        
+        stage.setX(centerX);
+        stage.setY(centerY);
+        stage.setScene(scene);
+
+        Game game = new Game();
+        game.run(root, gc , scene);
             
-            Group root = new Group();
-            Canvas canvas = new Canvas(App.width, App.height);
-            root.getChildren().add(canvas);
-            GraphicsContext  gc = canvas.getGraphicsContext2D();
-            Scene scene = new Scene(root); 
-
-            Stage stage = (Stage) container.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-
-            Game game = new Game();
-            game.run(root, gc , scene);
-            
-
     }
 
 
