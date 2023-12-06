@@ -41,7 +41,6 @@ public class Partie {
 
     private int counter = 0;
 
-
     private int score;
     private int highScore = 0;
     private int bonus = 6000;
@@ -50,6 +49,7 @@ public class Partie {
     private boolean reset = false;
     private boolean gameOver = false;
     private boolean victory = false;
+    private boolean paused = false;
     
     private Timeline gameTimeLine;
 
@@ -73,6 +73,10 @@ public class Partie {
     Text infoText = new Text();
     Text gameOverText = new Text();
     Text victoryText = new Text();
+    Text pauseText = new Text();
+
+    Pair<Integer, Integer> playerPosition = new Pair<>(7 * App.section_width, (int) App.height - 6 * App.section_height);
+
 
     public Partie() {
         score = 0;
@@ -91,7 +95,7 @@ public class Partie {
         
 
         // Add all elements to the root (to be seen)
-        root.getChildren().addAll(scoreText, highScoreText, symbolText, columnsText, infoText, gameOverText, victoryText);
+        root.getChildren().addAll(scoreText, highScoreText, symbolText, columnsText, infoText, gameOverText, victoryText, pauseText);
         
         // AnimationTimer gameLoop = new AnimationTimer() {
             //     @Override
@@ -101,7 +105,7 @@ public class Partie {
                 // };
                 // gameLoop.start();
                 
-        Player player = new Player(7 * App.section_width, App.height - 6 * App.section_height, root);
+        Player player = new Player(playerPosition.getKey(), playerPosition.getValue(), root);
 
         gameTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
             renderGame(gc, root, scene, player);
@@ -248,7 +252,7 @@ public class Partie {
         if (attempts > 1) {
             attempts --;           
             map.drawHammers(root);
-            player.setPosition(7 * App.section_width, App.height - 6 * App.section_height);
+            player.reset(playerPosition.getKey(), playerPosition.getValue());
             fireBallTrigger = false;
             barrelCount = barrelSpawnTime / 2;
             reset = false;
@@ -302,6 +306,21 @@ public class Partie {
                         player.setY_change(2);
                         player.setX_change(0);
                         player.setClimbing(true);
+                    }
+                }
+                if (key == KeyCode.P) {
+                    if (paused) {
+                        gameTimeLine.play();
+                        paused = false;
+                        pauseText.setText("");
+                    } else {
+                        gameTimeLine.pause();
+                        paused = true;
+                        pauseText.setText("Game Paused");
+                        pauseText.setFont(Font.font("Arial", 80)); 
+                        pauseText.setFill(Color.WHITE);
+                        pauseText.setX((App.width - pauseText.getLayoutBounds().getWidth()) / 2);
+                        pauseText.setY(App.height / 2);
                     }
                 }
             }
