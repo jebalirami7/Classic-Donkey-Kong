@@ -7,34 +7,33 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<Group xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<Group xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.game.controllers.Controller">
    <children>
       <ImageView fitHeight="448.0" fitWidth="907.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../370076778_742043374479205_8647747388527239776_n.png" />
          </image>
       </ImageView>
-      <VBox alignment="CENTER" layoutX="204.0" layoutY="178.0" prefHeight="156.0" prefWidth="192.0">
+      <VBox fx:id="container" alignment="CENTER" layoutX="207.0" layoutY="182.0" prefHeight="156.0" prefWidth="192.0">
          <children>
-            <Label fx:id="newGameLabel" text="New Game">
+            <Label fx:id="newGameLabel" onKeyPressed="#handleKeyPressed" text="New Game">
                <font>
-                  <Font size="31.0" />
+                  <Font size="26.0" />
                </font>
             </Label>
-            <Label text="Continue">
+            <Label fx:id="continueLabel" onKeyPressed="#handleKeyPressed" text="Continue">
                <font>
-                  <Font size="31.0" />
+                  <Font size="26.0" />
                </font>
             </Label>
-            <Label text="Scoreboard">
+            <Label fx:id="scoreBoardLabel" onKeyPressed="#handleKeyPressed" text="Scoreboard">
                <font>
-                  <Font size="31.0" />
+                  <Font size="26.0" />
                </font>
             </Label>
-            <Label text="Exit">
+            <Label fx:id="exitLabel" onKeyPressed="#handleKeyPressed" text="Exit">
                <font>
-                  <Font size="31.0" />
+                  <Font size="26.0" />
                </font>
             </Label>
          </children>
