@@ -15,7 +15,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -27,18 +26,11 @@ import javafx.stage.Stage;
 import main.java.com.game.App;
 import main.java.com.game.EmptyNameException;
 import main.java.com.game.Game;
-import main.java.com.game.Mario;
 import main.java.com.game.Player;
 import main.java.com.game.SaveData;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 
 
 public class Controller  implements Initializable   {
@@ -53,10 +45,12 @@ public class Controller  implements Initializable   {
 
     private int selectedIndex;
 
-    TableView<Player> tableView, scoreBoard;
 
-    Popup popup;
-    Boolean showError ;
+    private TableView<Player> tableView, scoreBoard;
+
+    private Popup popup;
+
+    private boolean showPlayers,showError ;
 
     public Controller()  {
         showError = false ;
@@ -78,6 +72,8 @@ public class Controller  implements Initializable   {
             menuItem.setFocusTraversable(true);
         }
         menuItems[selectedIndex].requestFocus(); 
+
+        showPlayers = false;
     }
 
 
@@ -87,27 +83,24 @@ public class Controller  implements Initializable   {
             moveUP();
         } else if (event.getCode() == KeyCode.DOWN) {
             moveDOWN();
-        } else if (event.getCode() == KeyCode.ENTER) {
+        } else if (event.getCode() == KeyCode.ENTER && !showPlayers) {
             handleMenuItemAction(selectedIndex);
+            showPlayers = true;
         }
     }
 
 
     private void moveUP() {
-
         selectedIndex = (selectedIndex -1) ;
         if (selectedIndex < 0) selectedIndex = menuItems.length -1 ;
         updateSelection();
-        
     }
 
 
     private void moveDOWN() {
-        
         selectedIndex = selectedIndex +1 ;
         if (selectedIndex >= menuItems.length) selectedIndex = 0;
         updateSelection();
-        
     }
 
 
@@ -169,7 +162,6 @@ public class Controller  implements Initializable   {
 
 
     public void addPlayer() {
-        // Load the new scene
         
         Popup popup = new Popup();
 
@@ -221,6 +213,7 @@ public class Controller  implements Initializable   {
                 KeyCode key = e.getCode();
                 if (key == KeyCode.ESCAPE || key == KeyCode.LEFT) {
                     popup.hide();
+                    showPlayers = false;
                 }
             }
         });
@@ -244,8 +237,6 @@ public class Controller  implements Initializable   {
 
     
     public void selectPlayer() {
-        // Load the new scene
-    
         VBox popupLayout = new VBox(10); 
         popupLayout.setAlignment(Pos.CENTER);
         popupLayout.getChildren().clear();
@@ -259,6 +250,7 @@ public class Controller  implements Initializable   {
                 KeyCode key = e.getCode();
                 if (key == KeyCode.ESCAPE || key == KeyCode.LEFT) {
                     popup.hide();
+                    showPlayers = false;
                 }
             }
         });
@@ -269,7 +261,7 @@ public class Controller  implements Initializable   {
         popupLayout.setMaxSize(400, 148);   
         popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10;");         
         popup.setAutoHide(true); 
-        
+
         Stage stage = (Stage) container.getScene().getWindow();
         double ownerX = stage.getX();
         double ownerY = stage.getY();
