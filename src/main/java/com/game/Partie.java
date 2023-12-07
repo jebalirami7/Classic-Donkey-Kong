@@ -50,7 +50,7 @@ public class Partie {
     private Player p;
     private Mario mario;
     private int score;
-    private int highScore = 0;
+    private int highScore;
     private int bonus = 6000;
     private int attempts;
     private int activeLevel = 0;
@@ -79,9 +79,7 @@ public class Partie {
     Text symbolText = new Text();
     Text columnsText = new Text();
     Text infoText = new Text();
-    Text gameOverText = new Text();
-    Text victoryText = new Text();
-    Text pauseText = new Text();
+    Text menuText = new Text();
 
     private int selectedIndex = 0;
     private Label[] menuItems;
@@ -94,6 +92,7 @@ public class Partie {
         this.p = p;
         score = 0;
         attempts = 3;
+        highScore = p.getScore();
         levels = new ArrayList<Level>();
         map = new Map();
 
@@ -107,20 +106,20 @@ public class Partie {
         ladder_objs = map.getLadders();
         hammer_objs = map.getHammers();
         
-
-        // Add all elements to the root (to be seen)
         root.getChildren().addAll(scoreText, highScoreText, symbolText, columnsText, infoText);
                 
         mario = new Mario(playerPosition.getKey(), playerPosition.getValue(), root);
 
         gameTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
             renderGame(gc, scene);
-            if (gameOver || reset) {
+            if (victory || gameOver || reset) {
                 gameTimeLine.stop();
-                new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-                    gameTimeLine.playFromStart();
-                    return;
-                })).play();
+                if (reset) {
+                    new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+                        gameTimeLine.playFromStart();
+                        return;
+                    })).play();
+                }
                 return;
             }
         }));
@@ -133,14 +132,6 @@ public class Partie {
         score = 0;
         attempts = 3;
         bonus = 6000;
-        
-
-        highScore = Math.max(highScore, score + bonus);
-        if (p.getScore() < highScore){
-            p.setScore(highScore);
-            SaveData.update(p.getName(), p.getScore());
-        }
-        highScore = 0;
         
         for(Barrel barrel : barrels) {
             barrel.clear(root);
@@ -155,18 +146,16 @@ public class Partie {
         }
         hammer_objs.clear();
 
-
         map.drawHammers(root);
         mario.reset(playerPosition.getKey(), playerPosition.getValue());
         fireBallTrigger = false;
         barrelCount = barrelSpawnTime / 2;
         reset = false;
         victory = false;
+        gameOver = false;
     }
 
 
-
-    
     private void renderGame(GraphicsContext gc, Scene scene) {
         // Draw Background
         gc.setFill(javafx.scene.paint.Color.BLACK);
@@ -259,13 +248,13 @@ public class Partie {
 
 
     private void resetGame() {
-        highScore = Math.max(highScore, score + bonus);
-        if (p.getScore() < highScore){
-            p.setScore(highScore);
-            SaveData.update(p.getName(), p.getScore());
-        }
-
+        
         if (victory) {
+            highScore = Math.max(highScore, score + bonus);
+            if (p.getScore() < highScore){
+                p.setScore(highScore);
+                SaveData.update(p.getName(), p.getScore());
+            }
             drawText();
             root.getChildren().add(menu("You Win"));
             return;
@@ -305,7 +294,6 @@ public class Partie {
             attempts --;           
             drawText();
             root.getChildren().add(menu("Game Over"));
-            mario.clear(root);
         }
     }
 
@@ -347,11 +335,11 @@ public class Partie {
                         mario.setClimbing(true);
                     }
                 }
-                if (key == KeyCode.P) {
+                if (key == KeyCode.P || key == KeyCode.ESCAPE) {
                     if (paused) {
                         gameTimeLine.play();
                         paused = false;
-                        pauseText.setText("");
+                        menuText.setText("");
                         root.getChildren().remove(root.getChildren().size() - 1);
                     } else {
                         gameTimeLine.pause();
@@ -417,9 +405,9 @@ public class Partie {
         switch (selectedIndex) {
             case 0:
                 System.out.println(selectedIndex);
-                gameTimeLine.play();
+                gameTimeLine.playFromStart();
                 paused = false;
-                pauseText.setText("");
+                menuText.setText("");
                 root.getChildren().remove(root.getChildren().size() - 1);
                 restartGame();
                 break;
@@ -451,7 +439,7 @@ public class Partie {
         exitLabel.setFont(Font.font("Arial", 50));
         exitLabel.setStyle("-fx-text-fill: WHITE; -fx-text-alignement: CENTER;");
 
-        menuItems = new Label[]{replayLabel,exitLabel};
+        menuItems = new Label[]{replayLabel, exitLabel};
         selectedIndex = 0;
         updateSelection();
         for (Label menuItem : menuItems) {
@@ -463,8 +451,6 @@ public class Partie {
         vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight()))/ 2);
         // vbox.setStyle("-fx-background-color: RED;");
         
-
-
         vbox.getChildren().addAll(text, replayLabel, exitLabel);
         return vbox;
     }
