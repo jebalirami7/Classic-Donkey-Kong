@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -36,7 +37,10 @@ public class App extends Application {
             // File url = new File("/home/rami/Desktop/donkey-kong/src/main/resources/media/win.wav");
             String url = getClass().getResource("/main/resources/media/test.mp3").toString();
             System.out.println(url);
-            // Media media = new Media(url);
+            Media media = new Media(url);
+            MediaPlayer p = new MediaPlayer(media);
+            p.play();
+
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/fxml/homeScreen.fxml"));
             Parent root = loader.load();

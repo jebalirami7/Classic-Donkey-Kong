@@ -10,10 +10,10 @@ public class Music {
 
     public Music(String audioPath) {
         try {
-            // mediaPlayer = new MediaPlayer(new Media(audioPath));
-            File file = new File(audioPath);
-            Media media = new Media(file.toURI().toString());
-            System.out.println(file.toURI().toString());
+            mediaPlayer = new MediaPlayer(new Media(audioPath));
+            // File file = new File(audioPath);
+            // Media media = new Media(file.toURI().toString());
+            // System.out.println(file.toURI().toString());
         } catch (Exception e) {
             System.out.println("Exception Message: " + e.getMessage());
         }
