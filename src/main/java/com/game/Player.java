@@ -1,6 +1,6 @@
 package main.java.com.game;
 
-public class Player {
+public class Player implements Comparable<Player>{
     
         String name ;
         int score ;
@@ -34,6 +34,20 @@ public class Player {
 
         public void setScore(int score) {
             this.score = score;
+        }
+
+
+        @Override
+        public int compareTo(Player arg) {
+            if ( arg.getScore() > this.score ) {
+                return -1 ;
+            }
+            else if ( arg.getScore() < this.score ) {
+                return 1 ;
+            }
+            else {
+                return this.name.compareTo(arg.getName());
+            }
         }
 
         

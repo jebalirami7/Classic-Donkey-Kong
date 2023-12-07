@@ -1,6 +1,8 @@
 package main.java.com.game.controllers;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -23,6 +25,7 @@ import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import main.java.com.game.App;
+import main.java.com.game.EmptyNameException;
 import main.java.com.game.Game;
 import main.java.com.game.Mario;
 import main.java.com.game.Player;
@@ -38,7 +41,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 
-public class Controller implements Initializable {
+public class Controller  implements Initializable   {
 
     @FXML private VBox container ;
     @FXML private Label newGameLabel;
@@ -50,12 +53,13 @@ public class Controller implements Initializable {
 
     private int selectedIndex;
 
-    TableView<Player> tableView;
+    TableView<Player> tableView, scoreBoard;
 
     Popup popup;
+    Boolean showError ;
 
     public Controller()  {
-        
+        showError = false ;
     }
 
 
@@ -65,6 +69,8 @@ public class Controller implements Initializable {
         popup = new Popup();
         tableView = new TableView<>();
         createTableView();
+        createScoreBoard();
+        
         menuItems = new Label[]{newGameLabel, continueLabel, scoreBoardLabel, exitLabel};
         selectedIndex = 0;
         updateSelection();
@@ -126,6 +132,7 @@ public class Controller implements Initializable {
                 selectPlayer();
                 break;
             case 2:
+                viewScoreBoard();
                 break;
             case 3:
                 Platform.exit();
@@ -167,23 +174,46 @@ public class Controller implements Initializable {
         Popup popup = new Popup();
 
         TextField textField = new TextField();
+        Label title = new Label("Enter Player Name");
+        Label error = new Label("Nom Invalid");
+        title.setFont(Font.font("Arial",18));
+        title.setStyle("-fx-text-fill: WHITE; -fx-text-alignement: CENTER;");
+
+        error.setFont(Font.font("Arial", 16));
+        error.setStyle("-fx-text-fill: RED; -fx-text-alignement: CENTER;");
+        System.out.println("went from here");
+        error.setVisible(showError);
 
         textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent e) {
-                if (e.getCode() == KeyCode.ENTER) {
-                    popup.hide();
-                    Player player = new Player(textField.getText(), 0);
-                    SaveData.write(player);
-                    tableView.getItems().add(player);
-                    newGame(player);
+                    try {
+                        if (e.getCode() == KeyCode.ENTER) {
+                            popup.hide();
+                            if (textField.getText().equals("")) throw new EmptyNameException();
+                            Player player = new Player(textField.getText(), 0);
+                            SaveData.write(player);
+                            tableView.getItems().add(player);
+                            newGame(player);
+                        
+                        }
+                    } catch (EmptyNameException e1) {
+                        System.out.println("empty name");
+                        Platform.runLater(() -> {
+                            showError = true ;
+                        });
+                        
+                    }
+
                 }
             }
-        });
+        );
+
+
 
         VBox popupLayout = new VBox(10); 
         popupLayout.setAlignment(Pos.CENTER);
-        popupLayout.getChildren().addAll(textField);
+        popupLayout.getChildren().addAll(title,textField,error);
 
         popupLayout.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -199,7 +229,7 @@ public class Controller implements Initializable {
 
         popupLayout.setMinSize(200, 50);
         popupLayout.setMaxSize(400, 148);   
-        popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10;");         
+        popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10; -fx-padding: 20;");         
         popup.setAutoHide(true); 
         
         Stage stage = (Stage) container.getScene().getWindow();
@@ -215,11 +245,10 @@ public class Controller implements Initializable {
     
     public void selectPlayer() {
         // Load the new scene
-        
-        
-
+    
         VBox popupLayout = new VBox(10); 
         popupLayout.setAlignment(Pos.CENTER);
+        popupLayout.getChildren().clear();
         popupLayout.getChildren().addAll(tableView);
 
         popupLayout.requestFocus();
@@ -254,7 +283,7 @@ public class Controller implements Initializable {
 
     private void createTableView() {
 
-        tableView = new TableView<>();
+        tableView = new TableView<Player>();
         
         TableColumn<Player, String> nameColumn = new TableColumn<>("NAME");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -270,6 +299,8 @@ public class Controller implements Initializable {
         Player[] playersArray = SaveData.read().entrySet().stream()
         .map(entry -> new Player(entry.getKey(), entry.getValue()))
         .toArray(Player[]::new);
+
+        
 
         tableView.getItems().addAll(playersArray);
 
@@ -289,6 +320,62 @@ public class Controller implements Initializable {
     }
 
 
+    private void viewScoreBoard() {
+        VBox popupLayout = new VBox(10); 
+        popupLayout.setAlignment(Pos.CENTER);
+        popupLayout.getChildren().clear();
+        popupLayout.getChildren().addAll(scoreBoard);
 
+        popupLayout.requestFocus();
+
+        popupLayout.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent e) {
+                KeyCode key = e.getCode();
+                if (key == KeyCode.ESCAPE || key == KeyCode.LEFT) {
+                    popup.hide();
+                }
+            }
+        });
+
+        popup.getContent().add(popupLayout);
+
+        popupLayout.setMinSize(200, 50);
+        popupLayout.setMaxSize(400, 148);   
+        popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10;");         
+        popup.setAutoHide(true); 
+        
+        Stage stage = (Stage) container.getScene().getWindow();
+        double ownerX = stage.getX();
+        double ownerY = stage.getY();
+        double ownerWidth = stage.getWidth();
+        double ownerHeight = stage.getHeight();
+        
+        popup.show(stage, ownerX + ownerWidth / 2, ownerY + ownerHeight / 2);
+
+    }
     
+
+    private void createScoreBoard() {
+        scoreBoard = new TableView<Player>();
+        
+        TableColumn<Player, String> nameColumn = new TableColumn<>("NAME");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Player, Integer> scoreColumn = new TableColumn<>("SCORE");
+        scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+
+        nameColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgba(0, 0, 0, 0.6);");
+        scoreColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgba(0, 0, 0, 0.6);");
+
+        scoreBoard.getColumns().addAll(nameColumn, scoreColumn);
+
+        Player[] playersArray = SaveData.read().entrySet().stream()
+        .map(entry -> new Player(entry.getKey(), entry.getValue())).sorted(Comparator
+        .comparingInt((e) -> e.getScore())).sorted(Comparator.reverseOrder())
+        .toArray(Player[]::new);   
+
+        scoreBoard.getItems().addAll(playersArray);
+        scoreBoard.getSelectionModel().selectFirst();
+    }
 }
