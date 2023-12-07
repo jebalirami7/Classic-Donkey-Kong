@@ -7,12 +7,16 @@ import java.util.Random;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -22,6 +26,8 @@ import javafx.util.Pair;
 public class Partie {
 
     private Map map ;
+
+    private Group root;
 
     // Initialize bridges rows
     private int start_y = (int)App.height - 2 * App.section_height;
@@ -41,6 +47,7 @@ public class Partie {
 
     private int counter = 0;
 
+    private Player p;
     private int score;
     private int highScore = 0;
     private int bonus = 6000;
@@ -75,18 +82,23 @@ public class Partie {
     Text victoryText = new Text();
     Text pauseText = new Text();
 
+    private int selectedIndex = 0;
+    private Label[] menuItems;
+
     Pair<Integer, Integer> playerPosition = new Pair<>(7 * App.section_width, (int) App.height - 6 * App.section_height);
 
 
-    public Partie() {
+    public Partie(Group root, Player p) {
+        this.root = root;
         score = 0;
         attempts = 3;
         levels = new ArrayList<Level>();
         map = new Map();
+        this.p = p;
     }
 
 
-    public void createPartie(Group root, GraphicsContext gc, Scene scene) {
+    public void createPartie(GraphicsContext gc, Scene scene) {
     
         map.draw(root);
         bridge_objs = map.getBridges();
@@ -95,20 +107,12 @@ public class Partie {
         
 
         // Add all elements to the root (to be seen)
-        root.getChildren().addAll(scoreText, highScoreText, symbolText, columnsText, infoText, gameOverText, victoryText, pauseText);
-        
-        // AnimationTimer gameLoop = new AnimationTimer() {
-            //     @Override
-            //     public void handle(long now) {
-                //         renderGame(gc, root);
-                //     }
-                // };
-                // gameLoop.start();
+        root.getChildren().addAll(scoreText, highScoreText, symbolText, columnsText, infoText);
                 
         Mario player = new Mario(playerPosition.getKey(), playerPosition.getValue(), root);
 
         gameTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
-            renderGame(gc, root, scene, player);
+            renderGame(gc, scene, player);
             if (gameOver || reset) {
                 gameTimeLine.stop();
                 new Timeline(new KeyFrame(Duration.seconds(1), e -> {
@@ -124,7 +128,7 @@ public class Partie {
     }
     
     
-    private void renderGame(GraphicsContext gc, Group root, Scene scene, Mario player) {
+    private void renderGame(GraphicsContext gc, Scene scene, Mario player) {
         // Draw Background
         gc.setFill(javafx.scene.paint.Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
@@ -132,7 +136,7 @@ public class Partie {
         // Check Victory
         victory = map.getTargetRect().getBoundsInParent().intersects(player.getRect().getBoundsInParent());
         if (victory) {
-            resetGame(player, root);
+            resetGame(player);
             return;
         }
 
@@ -167,7 +171,7 @@ public class Partie {
             }
 
             if (barrel.getRect().getBoundsInParent().intersects(player.getHitbox().getBoundsInParent())) {
-                resetGame(player, root);
+                resetGame(player);
                 return;
             }
         }
@@ -176,7 +180,7 @@ public class Partie {
             fireball.checkFall(ladder_objs, row2_y, row3_y, row4_y, row5_y, row6_y);
             fireball.update(bridge_objs);
             if (fireball.getRect().getBoundsInParent().intersects(player.getHitbox().getBoundsInParent())) {
-                resetGame(player, root);
+                resetGame(player);
                 return;
             }
         }
@@ -194,7 +198,7 @@ public class Partie {
 
         // check if the player is out of the window
         if (player.getRect().getLayoutX() + player.getRect().getWidth() < 0 || player.getRect().getLayoutX() > App.width || player.getRect().getLayoutY() < 0 || player.getRect().getLayoutY() > App.height) {
-            resetGame(player, root);
+            resetGame(player);
             return;
         }
         
@@ -205,7 +209,7 @@ public class Partie {
             if (bonus > 0)
             bonus -= 100;
             else {
-                resetGame(player, root);
+                resetGame(player);
                 return;
             }
         }
@@ -215,16 +219,16 @@ public class Partie {
     }
 
 
-    private void resetGame(Mario player, Group root) {
+    private void resetGame(Mario player) {
         highScore = Math.max(highScore, score + bonus);
-        
+        if (p.getScore() < highScore){
+            p.setScore(highScore);
+            SaveData.update(p.getName(), p.getScore());
+        }
+
         if (victory) {
             drawText();
-            victoryText.setText("You Win");
-            victoryText.setFont(Font.font("Arial", 80)); 
-            victoryText.setFill(Color.WHITE);
-            victoryText.setX((App.width - victoryText.getLayoutBounds().getWidth()) / 2);
-            victoryText.setY(App.height / 2);
+            root.getChildren().add(menu("You Win"));
             return;
         }
 
@@ -261,11 +265,7 @@ public class Partie {
             gameOver = true;
             attempts --;           
             drawText();
-            gameOverText.setText("Game Over");
-            gameOverText.setFont(Font.font("Arial", 80)); 
-            gameOverText.setFill(Color.WHITE);
-            gameOverText.setX((App.width - gameOverText.getLayoutBounds().getWidth()) / 2);
-            gameOverText.setY(App.height / 2);
+            root.getChildren().add(menu("Game Over"));
             player.clear(root);
         }
     }
@@ -313,14 +313,11 @@ public class Partie {
                         gameTimeLine.play();
                         paused = false;
                         pauseText.setText("");
+                        root.getChildren().remove(root.getChildren().size() - 1);
                     } else {
                         gameTimeLine.pause();
                         paused = true;
-                        pauseText.setText("Game Paused");
-                        pauseText.setFont(Font.font("Arial", 80)); 
-                        pauseText.setFill(Color.WHITE);
-                        pauseText.setX((App.width - pauseText.getLayoutBounds().getWidth()) / 2);
-                        pauseText.setY(App.height / 2);
+                        root.getChildren().add(menu("Game Paused"));
                     }
                 }
             }
@@ -344,6 +341,80 @@ public class Partie {
                 }             
             }
         });
+    }
+
+
+    private void handleKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.UP) {
+            moveUP();
+        } else if (event.getCode() == KeyCode.DOWN) {
+            moveDOWN();
+        } else if (event.getCode() == KeyCode.ENTER) {
+            handleMenuItemAction(selectedIndex);
+        }
+    }
+    private void moveUP() {
+        selectedIndex = (selectedIndex -1) ;
+        if (selectedIndex < 0) selectedIndex = menuItems.length -1 ;
+        updateSelection();
+        
+    }
+    private void moveDOWN() {
+        selectedIndex = selectedIndex +1 ;
+        if (selectedIndex >= menuItems.length) selectedIndex = 0;
+        updateSelection();
+        
+    }
+    private void updateSelection() {
+        for (int i = 0; i < menuItems.length; i++) {
+            if (i == selectedIndex) {
+                menuItems[i].setStyle("-fx-text-fill: blue; -fx-font-weight: bold;");
+            } else {
+                menuItems[i].setStyle("-fx-text-fill: black;");
+            }
+        }
+    }
+    private void handleMenuItemAction(int selectedIndex) {
+        switch (selectedIndex) {
+            case 0:
+                // renderGame(null, null, null);
+                break;
+            case 1:
+                Platform.exit();
+            default:
+                break;
+        }
+
+    }
+
+
+    public VBox menu(String s) {
+        VBox vbox = new VBox();
+        vbox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10; -fx-padding: 20;");
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setOnKeyPressed(e -> {handleKeyPressed(e);});
+        
+        Text text = new Text();
+        text.setText(s);
+        text.setFont(Font.font("Arial", 80)); 
+        text.setFill(Color.WHITE);
+        // text.setX((App.width - text.getLayoutBounds().getWidth()) / 2);
+        // text.setY(App.height / 2);
+        Label replayLabel = new Label("REPLAY");
+        replayLabel.setFont(Font.font("Arial", 50));
+        replayLabel.setStyle("-fx-text-fill: WHITE; -fx-text-alignement: CENTER;");
+        Label exitLabel = new Label("EXIT");
+        exitLabel.setFont(Font.font("Arial", 50));
+        exitLabel.setStyle("-fx-text-fill: WHITE; -fx-text-alignement: CENTER;");
+
+        vbox.setLayoutX((App.width - text.getLayoutBounds().getWidth()) / 2);
+        vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight()))/ 2);
+        // vbox.setStyle("-fx-background-color: RED;");
+        
+
+
+        vbox.getChildren().addAll(text, replayLabel, exitLabel);
+        return vbox;
     }
 
 

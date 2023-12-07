@@ -7,18 +7,15 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Game {
 
-    private Partie partie ;
+    private Partie partie;
 
-
-    public Game() {
-        partie = new Partie();
+    public Game(Group root, Player player) {
+        partie = new Partie(root, player);
     }
 
-    public void run (Group root, GraphicsContext gc, Scene scene) {
+    public void run (GraphicsContext gc, Scene scene) {
 
-        
-        partie.createPartie(root, gc, scene);
-
+        partie.createPartie( gc, scene);
 
     }
     

@@ -1,0 +1,6 @@
+Name: Yassine
+Score: 0
+Name: Ala
+Score: 6000
+Name: Rami
+Score: 0
