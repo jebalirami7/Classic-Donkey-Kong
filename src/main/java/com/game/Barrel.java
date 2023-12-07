@@ -46,8 +46,8 @@ public final class Barrel extends Enemy {
         }
 
         if (!falling) {
-            double rectrect = rect.getLayoutY() + width;
-            if (row5_top > rectrect || (row3_top > rectrect && rectrect > row4_top) || (row1_top > rectrect && rectrect > row2_top)) {
+            double rectBottom = rect.getLayoutY() + width;
+            if (row5_top > rectBottom || (row3_top > rectBottom && rectBottom > row4_top) || (row1_top > rectBottom && rectBottom > row2_top)) {
                 x_change = 3; //0.5, 3
             } else {
                 x_change = -3;
