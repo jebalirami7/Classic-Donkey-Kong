@@ -416,13 +416,12 @@ public class Partie {
             default:
                 break;
         }
-
     }
 
 
     public VBox menu(String s) {
         VBox vbox = new VBox();
-        vbox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10; -fx-padding: 20;");
+        vbox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10; -fx-padding: 30;");
         vbox.setAlignment(Pos.CENTER);
         vbox.setOnKeyPressed(e -> {handleKeyPressed(e);});
         
@@ -430,14 +429,13 @@ public class Partie {
         text.setText(s);
         text.setFont(Font.font("Arial", 80)); 
         text.setFill(Color.WHITE);
-        // text.setX((App.width - text.getLayoutBounds().getWidth()) / 2);
-        // text.setY(App.height / 2);
+
         Label replayLabel = new Label("REPLAY");
         replayLabel.setFont(Font.font("Arial", 50));
-        replayLabel.setStyle("-fx-text-fill: WHITE; -fx-text-alignement: CENTER;");
+        replayLabel.setStyle("-fx-text-fill: WHITE;");
         Label exitLabel = new Label("EXIT");
         exitLabel.setFont(Font.font("Arial", 50));
-        exitLabel.setStyle("-fx-text-fill: WHITE; -fx-text-alignement: CENTER;");
+        exitLabel.setStyle("-fx-text-fill: WHITE;");
 
         menuItems = new Label[]{replayLabel, exitLabel};
         selectedIndex = 0;
@@ -447,9 +445,12 @@ public class Partie {
         }
         menuItems[selectedIndex].requestFocus(); 
 
-        vbox.setLayoutX((App.width - text.getLayoutBounds().getWidth()) / 2);
-        vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight()))/ 2);
-        // vbox.setStyle("-fx-background-color: RED;");
+        vbox.setAlignment(Pos.CENTER);
+
+        Platform.runLater(() -> {
+            vbox.setLayoutX((App.width - text.getLayoutBounds().getWidth()) / 2 - 30);
+            vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight())) / 2 - 30);
+        });
         
         vbox.getChildren().addAll(text, replayLabel, exitLabel);
         return vbox;
