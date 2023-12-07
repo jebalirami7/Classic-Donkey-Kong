@@ -16,12 +16,13 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class Map {
-    public Image dk1 = new Image("file:src/main/resources/assets/images/dk/dk1.png");
-    public Image dk2 = new Image("file:src/main/resources/assets/images/dk/dk2.png");
-    public Image dk3 = new Image("file:src/main/resources/assets/images/dk/dk3.png");
+    private Image dk1 = new Image("file:src/main/resources/assets/images/dk/dk1.png");
+    private Image dk2 = new Image("file:src/main/resources/assets/images/dk/dk2.png");
+    private Image dk3 = new Image("file:src/main/resources/assets/images/dk/dk3.png");
+    private Image barrelImage = new Image( "file:src/main/resources/assets/images/barrels/barrel.png");
 
     private final ImageView fireImg = new ImageView(new Image("file:src/main/resources/assets/images/fire.png"));
-    private final ImageView barrelImg = new ImageView();
+    private final ImageView barrelImgView = new ImageView();
     private final ImageView dk = new ImageView();
     private final ImageView peach = new ImageView(new Image("file:src/main/resources/assets/images/peach/peach2.png"));
 
@@ -118,11 +119,11 @@ public class Map {
         dk.setFitHeight(5 * App.section_height);
         dk.setX(3.5 * App.section_width);
         dk.setY(row6_y - 5.5 * App.section_height);
-        barrelImg.setCache(true);
-        barrelImg.setFitWidth(50);
-        barrelImg.setFitHeight(50);
-        barrelImg.setX(230);
-        barrelImg.setY(250);
+        barrelImgView.setCache(true);
+        barrelImgView.setFitWidth(50);
+        barrelImgView.setFitHeight(50);
+        barrelImgView.setX(230);
+        barrelImgView.setY(250);
 
         // Draw Peach
         peach.setCache(true);
@@ -141,7 +142,7 @@ public class Map {
 
 
         // Add all elements to the root (to be seen)
-        root.getChildren().addAll(barrelImg, dk, peach);
+        root.getChildren().addAll(barrelImgView, dk, peach);
         
     }
 
@@ -216,8 +217,9 @@ public class Map {
         // Draw 4 Barrels On The Top-Left Corner
         List<Double> dx = List.of(1.2, 1.2, 2.5, 2.5);
         List<Double> dy = List.of(5.4, 7.7, 7.7, 5.4);
+        Image barrelNextToKong = new Image("file:src/main/resources/assets/images/barrels/barrel2.png");
         for(int i=0; i<4 ;i++) {
-            ImageView barrel = new ImageView(new Image("file:src/main/resources/assets/images/barrels/barrel2.png"));
+            ImageView barrel = new ImageView(barrelNextToKong);
             barrel.setCache(true);
             barrel.setFitWidth(2 * App.section_width);
             barrel.setFitHeight(2.5 * App.section_height);
@@ -236,7 +238,7 @@ public class Map {
     public void animateKong(Group root, int barrelTime, int barrelSpawnTime, int barrelCount) {
         int phaseTime = barrelTime / 4;
         dk.setScaleX(1);
-        barrelImg.setImage(null);
+        barrelImgView.setImage(null);
         if (barrelSpawnTime - barrelCount > 3 * phaseTime) {
             dk.setImage(dk2);
         }
@@ -249,7 +251,7 @@ public class Map {
         else {
             dk.setScaleX(-1);
             dk.setImage(dk1);
-            barrelImg.setImage(new Image( "file:src/main/resources/assets/images/barrels/barrel.png"));
+            barrelImgView.setImage(barrelImage);
         }       
     }
 

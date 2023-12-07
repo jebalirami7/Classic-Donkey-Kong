@@ -8,7 +8,7 @@ import javafx.scene.shape.Rectangle;
 
 public class Hammer {
     
-    public static Image hammerImg = new Image("file:src/main/resources/assets/images/hammer.png");
+    private Image hammerImg = new Image("file:src/main/resources/assets/images/hammer.png");
 
     private ImageView hammer;
     private Rectangle rect;
@@ -17,7 +17,7 @@ public class Hammer {
     private double hammerHeight = 2 * App.section_height;
 
     public Hammer(double x, double y, Group root) {
-        hammer = new ImageView(new Image("file:src/main/resources/assets/images/hammer.png"));
+        hammer = new ImageView(hammerImg);
         hammer.setCache(true);
         hammer.setFitWidth(hammerWidth);
         hammer.setFitHeight(hammerHeight);

@@ -13,13 +13,16 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public final class Barrel extends Enemy {
+
+    private Image barrelImage = new Image( "file:src/main/resources/assets/images/barrels/barrel.png");
+
     private boolean oilCollision = false;
     private boolean falling = false;
 
 
     public Barrel(double x, double y, Group root) {
         super(x, y, 50, 50, 0, root);
-        image.setImage(new Image( "file:src/main/resources/assets/images/barrels/barrel.png"));
+        image.setImage(barrelImage);
     }
 
 

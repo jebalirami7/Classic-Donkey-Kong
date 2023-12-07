@@ -16,7 +16,7 @@ sealed class Enemy permits Barrel, FireBall {
     protected int count = 0;
     protected boolean checkLad = false;
     protected Rectangle rect;
-    protected Circle circle;
+    // protected Circle circle;
 
     public Enemy(double x, double y, double width, double height, double pos, Group root) {
         // Set up the image and position
