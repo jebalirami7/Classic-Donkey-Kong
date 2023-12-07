@@ -9,13 +9,13 @@ public class Game {
 
     private Partie partie;
 
-    public Game(Group root, Player player) {
+    public Game(Group root, Player player, GraphicsContext gc, Scene scene) {
         partie = new Partie(root, player);
     }
 
     public void run (GraphicsContext gc, Scene scene) {
 
-        partie.createPartie( gc, scene);
+        partie.createPartie( gc, scene );
 
     }
     

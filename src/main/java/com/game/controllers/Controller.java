@@ -52,6 +52,8 @@ public class Controller implements Initializable {
 
     TableView<Player> tableView;
 
+    Popup popup;
+
     public Controller()  {
         
     }
@@ -60,6 +62,7 @@ public class Controller implements Initializable {
     @Override
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
+        popup = new Popup();
         tableView = new TableView<>();
         createTableView();
         menuItems = new Label[]{newGameLabel, continueLabel, scoreBoardLabel, exitLabel};
@@ -153,7 +156,7 @@ public class Controller implements Initializable {
         stage.setScene(scene);
 
 
-        Game game = new Game(root, player);
+        Game game = new Game(root, player, gc , scene);
         game.run(gc, scene);
     }
 
@@ -213,11 +216,13 @@ public class Controller implements Initializable {
     public void selectPlayer() {
         // Load the new scene
         
-        Popup popup = new Popup();
+        
 
         VBox popupLayout = new VBox(10); 
         popupLayout.setAlignment(Pos.CENTER);
         popupLayout.getChildren().addAll(tableView);
+
+        popupLayout.requestFocus();
 
         popupLayout.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -275,7 +280,9 @@ public class Controller implements Initializable {
                 Player selectedPlayer = tableView.getSelectionModel().getSelectedItem();
                 if (selectedPlayer != null) {
                     System.out.println("Starting game with: " + selectedPlayer.getName());
+                    popup.hide();
                     newGame(selectedPlayer);
+
                 }
             }
         });

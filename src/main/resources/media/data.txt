@@ -1,6 +1,10 @@
 Name: Yassine
-Score: 0
+Score: 6000
 Name: Ala
 Score: 6000
+Name: loser2
+Score: 5200
+Name: loser
+Score: 5100
 Name: Rami
 Score: 0

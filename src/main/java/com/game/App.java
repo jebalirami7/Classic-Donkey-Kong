@@ -39,7 +39,7 @@ public class App extends Application {
             System.out.println(url);
             Media media = new Media(url);
             MediaPlayer p = new MediaPlayer(media);
-            p.play();
+            //p.play();
 
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/fxml/homeScreen.fxml"));

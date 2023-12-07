@@ -48,6 +48,7 @@ public class Partie {
     private int counter = 0;
 
     private Player p;
+    private Mario mario;
     private int score;
     private int highScore = 0;
     private int bonus = 6000;
@@ -90,11 +91,12 @@ public class Partie {
 
     public Partie(Group root, Player p) {
         this.root = root;
+        this.p = p;
         score = 0;
         attempts = 3;
         levels = new ArrayList<Level>();
         map = new Map();
-        this.p = p;
+
     }
 
 
@@ -109,10 +111,10 @@ public class Partie {
         // Add all elements to the root (to be seen)
         root.getChildren().addAll(scoreText, highScoreText, symbolText, columnsText, infoText);
                 
-        Mario player = new Mario(playerPosition.getKey(), playerPosition.getValue(), root);
+        mario = new Mario(playerPosition.getKey(), playerPosition.getValue(), root);
 
         gameTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
-            renderGame(gc, scene, player);
+            renderGame(gc, scene);
             if (gameOver || reset) {
                 gameTimeLine.stop();
                 new Timeline(new KeyFrame(Duration.seconds(1), e -> {
@@ -127,16 +129,53 @@ public class Partie {
         
     }
     
+    private void restartGame() {
+        score = 0;
+        attempts = 3;
+        bonus = 6000;
+        
+
+        highScore = Math.max(highScore, score + bonus);
+        if (p.getScore() < highScore){
+            p.setScore(highScore);
+            SaveData.update(p.getName(), p.getScore());
+        }
+        highScore = 0;
+        
+        for(Barrel barrel : barrels) {
+            barrel.clear(root);
+        }
+        barrels.clear();
+        for(FireBall fireBall : fireBalls) {
+            fireBall.clear(root);
+        }
+        fireBalls.clear();
+        for (Hammer hammer : hammer_objs) {
+            hammer.clear(root);
+        }
+        hammer_objs.clear();
+
+
+        map.drawHammers(root);
+        mario.reset(playerPosition.getKey(), playerPosition.getValue());
+        fireBallTrigger = false;
+        barrelCount = barrelSpawnTime / 2;
+        reset = false;
+        victory = false;
+    }
+
+
+
     
-    private void renderGame(GraphicsContext gc, Scene scene, Mario player) {
+    private void renderGame(GraphicsContext gc, Scene scene) {
         // Draw Background
         gc.setFill(javafx.scene.paint.Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         // Check Victory
-        victory = map.getTargetRect().getBoundsInParent().intersects(player.getRect().getBoundsInParent());
+        victory = map.getTargetRect().getBoundsInParent().intersects(mario.getRect().getBoundsInParent());
         if (victory) {
-            resetGame(player);
+            resetGame();
             return;
         }
 
@@ -164,14 +203,14 @@ public class Partie {
                 fireBallTrigger = false;
             }
 
-            if (barrel.getRect().getBoundsInParent().intersects(player.getHammerBox().getBoundsInParent())) {
+            if (barrel.getRect().getBoundsInParent().intersects(mario.getHammerBox().getBoundsInParent())) {
                 barrelIterator.remove();
                 barrel.clear(root);
                 score += 500;
             }
 
-            if (barrel.getRect().getBoundsInParent().intersects(player.getHitbox().getBoundsInParent())) {
-                resetGame(player);
+            if (barrel.getRect().getBoundsInParent().intersects(mario.getHitbox().getBoundsInParent())) {
+                resetGame();
                 return;
             }
         }
@@ -179,26 +218,26 @@ public class Partie {
         for (FireBall fireball : fireBalls) {
             fireball.checkFall(ladder_objs, row2_y, row3_y, row4_y, row5_y, row6_y);
             fireball.update(bridge_objs);
-            if (fireball.getRect().getBoundsInParent().intersects(player.getHitbox().getBoundsInParent())) {
-                resetGame(player);
+            if (fireball.getRect().getBoundsInParent().intersects(mario.getHitbox().getBoundsInParent())) {
+                resetGame();
                 return;
             }
         }
 
         for (Hammer hammer : hammer_objs) {
-            hammer.draw(player);
+            hammer.draw(mario);
         }
 
         map.animateKong(root, barrelTime, barrelSpawnTime, barrelCount);
         drawText();
 
-        player.update(bridge_objs);
-        player.draw();
-        climbingStatus = player.checkClimb(ladder_objs);
+        mario.update(bridge_objs);
+        mario.draw();
+        climbingStatus = mario.checkClimb(ladder_objs);
 
         // check if the player is out of the window
-        if (player.getRect().getLayoutX() + player.getRect().getWidth() < 0 || player.getRect().getLayoutX() > App.width || player.getRect().getLayoutY() < 0 || player.getRect().getLayoutY() > App.height) {
-            resetGame(player);
+        if (mario.getRect().getLayoutX() + mario.getRect().getWidth() < 0 || mario.getRect().getLayoutX() > App.width || mario.getRect().getLayoutY() < 0 || mario.getRect().getLayoutY() > App.height) {
+            resetGame();
             return;
         }
         
@@ -209,17 +248,17 @@ public class Partie {
             if (bonus > 0)
             bonus -= 100;
             else {
-                resetGame(player);
+                resetGame();
                 return;
             }
         }
         
-        keyboardManager(scene, player, climbingStatus.getKey(), climbingStatus.getValue());
+        keyboardManager(scene, climbingStatus.getKey(), climbingStatus.getValue());
     
     }
 
 
-    private void resetGame(Mario player) {
+    private void resetGame() {
         highScore = Math.max(highScore, score + bonus);
         if (p.getScore() < highScore){
             p.setScore(highScore);
@@ -256,7 +295,7 @@ public class Partie {
         if (attempts > 1) {
             attempts --;           
             map.drawHammers(root);
-            player.reset(playerPosition.getKey(), playerPosition.getValue());
+            mario.reset(playerPosition.getKey(), playerPosition.getValue());
             fireBallTrigger = false;
             barrelCount = barrelSpawnTime / 2;
             reset = false;
@@ -266,46 +305,46 @@ public class Partie {
             attempts --;           
             drawText();
             root.getChildren().add(menu("Game Over"));
-            player.clear(root);
+            mario.clear(root);
         }
     }
 
 
-    public void keyboardManager(Scene scene, Mario player, boolean climb, boolean down) {
+    public void keyboardManager(Scene scene, boolean climb, boolean down) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent e) {
                 KeyCode key = e.getCode();
 
-                if ((key == KeyCode.RIGHT || key == KeyCode.D) && !player.isClimbing() ) {
+                if ((key == KeyCode.RIGHT || key == KeyCode.D) && !mario.isClimbing() ) {
                     // System.out.println("moving right");
-                    player.setX_change(1);
-                    player.setDir(1);
+                    mario.setX_change(1);
+                    mario.setDir(1);
                 }
-                if ((key == KeyCode.LEFT || key == KeyCode.Q) && !player.isClimbing() ) {
+                if ((key == KeyCode.LEFT || key == KeyCode.Q) && !mario.isClimbing() ) {
                     // System.out.println("moving left");
-                    player.setX_change(-1);
-                    player.setDir(-1);
+                    mario.setX_change(-1);
+                    mario.setDir(-1);
                 }
-                if (key == KeyCode.SPACE && player.isLanded() && !player.getHammer()) {
+                if (key == KeyCode.SPACE && mario.isLanded() && !mario.getHammer()) {
                     // System.out.println("jumping");
-                    player.setLanded(false);
-                    player.setY_change(-5.5);
+                    mario.setLanded(false);
+                    mario.setY_change(-5.5);
                 }
-                if ((key == KeyCode.UP || key == KeyCode.Z) && !player.getHammer()) {
+                if ((key == KeyCode.UP || key == KeyCode.Z) && !mario.getHammer()) {
                     if (climb) {
                         // System.out.println("climbing up");
-                        player.setY_change(-2);
-                        player.setX_change(0);
-                        player.setClimbing(true);
+                        mario.setY_change(-2);
+                        mario.setX_change(0);
+                        mario.setClimbing(true);
                     }
                 }
-                if ((key == KeyCode.DOWN || key == KeyCode.S) && !player.getHammer()) {
+                if ((key == KeyCode.DOWN || key == KeyCode.S) && !mario.getHammer()) {
                     if (down) {
                         // System.out.println("climbing down");
-                        player.setY_change(2);
-                        player.setX_change(0);
-                        player.setClimbing(true);
+                        mario.setY_change(2);
+                        mario.setX_change(0);
+                        mario.setClimbing(true);
                     }
                 }
                 if (key == KeyCode.P) {
@@ -329,14 +368,14 @@ public class Partie {
                 KeyCode key = e.getCode();
 
                 if (key == KeyCode.RIGHT || key == KeyCode.D || key == KeyCode.LEFT || key == KeyCode.Q) {
-                    player.setX_change(0);
+                    mario.setX_change(0);
                 }
                 if (key == KeyCode.UP || key == KeyCode.Z || key == KeyCode.DOWN || key == KeyCode.S) {
                     if (climb) {
-                        player.setY_change(0);
+                        mario.setY_change(0);
                     }
-                    if (player.isClimbing() && player.isLanded()) {
-                        player.setClimbing(false);
+                    if (mario.isClimbing() && mario.isLanded()) {
+                        mario.setClimbing(false);
                     }
                 }             
             }
@@ -370,14 +409,19 @@ public class Partie {
             if (i == selectedIndex) {
                 menuItems[i].setStyle("-fx-text-fill: blue; -fx-font-weight: bold;");
             } else {
-                menuItems[i].setStyle("-fx-text-fill: black;");
+                menuItems[i].setStyle("-fx-text-fill: white;");
             }
         }
     }
     private void handleMenuItemAction(int selectedIndex) {
         switch (selectedIndex) {
             case 0:
-                // renderGame(null, null, null);
+                System.out.println(selectedIndex);
+                gameTimeLine.play();
+                paused = false;
+                pauseText.setText("");
+                root.getChildren().remove(root.getChildren().size() - 1);
+                restartGame();
                 break;
             case 1:
                 Platform.exit();
@@ -406,6 +450,14 @@ public class Partie {
         Label exitLabel = new Label("EXIT");
         exitLabel.setFont(Font.font("Arial", 50));
         exitLabel.setStyle("-fx-text-fill: WHITE; -fx-text-alignement: CENTER;");
+
+        menuItems = new Label[]{replayLabel,exitLabel};
+        selectedIndex = 0;
+        updateSelection();
+        for (Label menuItem : menuItems) {
+            menuItem.setFocusTraversable(true);
+        }
+        menuItems[selectedIndex].requestFocus(); 
 
         vbox.setLayoutX((App.width - text.getLayoutBounds().getWidth()) / 2);
         vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight()))/ 2);
