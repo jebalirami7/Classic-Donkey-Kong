@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -17,6 +18,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Popup;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import main.java.com.game.App;
 import main.java.com.game.Game;
@@ -32,11 +34,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 
-public class Controller  implements Initializable {
+public class Controller implements Initializable {
 
-
-
-    
     @FXML private VBox container ;
     @FXML private Label newGameLabel;
     @FXML private Label continueLabel;
@@ -52,6 +51,7 @@ public class Controller  implements Initializable {
 
     }
 
+
     @Override
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
@@ -66,9 +66,6 @@ public class Controller  implements Initializable {
     }
 
 
-
-
-
     @FXML
     private void handleKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.UP) {
@@ -80,6 +77,7 @@ public class Controller  implements Initializable {
         }
     }
 
+
     private void moveUP() {
 
         selectedIndex = (selectedIndex -1) ;
@@ -88,6 +86,7 @@ public class Controller  implements Initializable {
         
     }
 
+
     private void moveDOWN() {
         
         selectedIndex = selectedIndex +1 ;
@@ -95,6 +94,7 @@ public class Controller  implements Initializable {
         updateSelection();
         
     }
+
 
     private void updateSelection() {
         for (int i = 0; i < menuItems.length; i++) {
@@ -106,7 +106,6 @@ public class Controller  implements Initializable {
         }
     }
 
-    
     
     @FXML
     private void handleMenuItemAction(int selectedIndex) {
@@ -125,7 +124,6 @@ public class Controller  implements Initializable {
             default:
                 break;
         }
-        
 
     }
 
@@ -152,6 +150,25 @@ public class Controller  implements Initializable {
     
     public void selectPlayer() {
         // Load the new scene
+        Group root = new Group();
+        Canvas canvas = new Canvas(App.width, App.height);
+        root.getChildren().add(canvas);
+        GraphicsContext  gc = canvas.getGraphicsContext2D();
+        Scene scene = new Scene(root); 
+
+        Stage stage = (Stage) container.getScene().getWindow();
+        stage.show();
+
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        double centerX = screenBounds.getMinX() + (screenBounds.getWidth() - App.width) / 2;
+        double centerY = screenBounds.getMinY() + (screenBounds.getHeight() - App.height) / 2;
+        
+        stage.setX(centerX);
+        stage.setY(centerY);
+        stage.setScene(scene);
+
+        Game game = new Game();
+        game.run(root, gc , scene);
             
            
             Popup popup = new Popup();
@@ -172,7 +189,7 @@ public class Controller  implements Initializable {
             popup.setAutoHide(true); 
 
         
-        Stage stage = (Stage) container.getScene().getWindow();
+        
         double ownerX = stage.getX();
         double ownerY = stage.getY();
         double ownerWidth = stage.getWidth();
