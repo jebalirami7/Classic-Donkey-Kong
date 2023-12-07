@@ -100,7 +100,7 @@ public class Partie {
                 // };
                 // gameLoop.start();
                 
-        Player player = new Player(7 * App.section_width, App.height - 6 * App.section_height, root);
+        Mario player = new Mario(7 * App.section_width, App.height - 6 * App.section_height, root);
 
         gameTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
             renderGame(gc, root, scene, player);
@@ -119,7 +119,7 @@ public class Partie {
     }
     
     
-    private void renderGame(GraphicsContext gc, Group root, Scene scene, Player player) {
+    private void renderGame(GraphicsContext gc, Group root, Scene scene, Mario player) {
         // Draw Background
         gc.setFill(javafx.scene.paint.Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
@@ -207,7 +207,7 @@ public class Partie {
     }
 
 
-    private void resetGame(Player player, Group root) {
+    private void resetGame(Mario player, Group root) {
         highScore = Math.max(highScore, score + bonus);
         
         if (victory) {
@@ -263,7 +263,7 @@ public class Partie {
     }
 
 
-    public void keyboardManager(Scene scene, Player player, boolean climb, boolean down) {
+    public void keyboardManager(Scene scene, Mario player, boolean climb, boolean down) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent e) {

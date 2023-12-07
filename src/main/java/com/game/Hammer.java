@@ -32,7 +32,7 @@ public class Hammer {
     }
     
 
-    public void draw(Player player) {
+    public void draw(Mario player) {
         if (!used) {
             if (rect.getBoundsInParent().intersects(player.getHitbox().getBoundsInParent())) {
                 hammer.setImage(null);  // kill()
