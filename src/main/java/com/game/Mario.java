@@ -10,15 +10,13 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 
 public class Mario {
-    
-    public Image standing = new Image("file:src/main/resources/assets/images/mario/standing.png");
-    public Image running = new Image("file:src/main/resources/assets/images/mario/running.png");
-    public Image jumping = new Image("file:src/main/resources/assets/images/mario/jumping.png");
-    public Image climbing1 = new Image("file:src/main/resources/assets/images/mario/climbing1.png");
-    public Image climbing2 = new Image("file:src/main/resources/assets/images/mario/climbing2.png");
-    public Image hammerJump = new Image("file:src/main/resources/assets/images/mario/hammer_jump.png");
-    public Image hammerStand = new Image("file:src/main/resources/assets/images/mario/hammer_stand.png");
-    public Image hammerOverhead = new Image("file:src/main/resources/assets/images/mario/hammer_overhead.png");
+    private Image standing = new Image("file:src/main/resources/assets/images/mario/standing.png");
+    private Image running = new Image("file:src/main/resources/assets/images/mario/running.png");
+    private Image jumping = new Image("file:src/main/resources/assets/images/mario/jumping.png");
+    private Image climbing1 = new Image("file:src/main/resources/assets/images/mario/climbing1.png");
+    private Image climbing2 = new Image("file:src/main/resources/assets/images/mario/climbing2.png");
+    private Image hammerJump = new Image("file:src/main/resources/assets/images/mario/hammer_jump.png");
+    private Image hammerOverhead = new Image("file:src/main/resources/assets/images/mario/hammer_overhead.png");
 
     private ImageView image;
     private double imageWidth = 2 * App.section_width;
@@ -68,8 +66,8 @@ public class Mario {
     }
 
 
-    public void setPosition(double x, double y) {
-        // Set up the image and position
+    public void reset(double x, double y) {
+        // Reset the player
         image.setX(x);
         image.setY(y);
         rect.setLayoutX(x);
@@ -160,7 +158,7 @@ public class Mario {
                 image.setImage(hammerJump);
             }
             else {
-                imageHeight = 3 * App.section_height;
+                imageHeight = 4 * App.section_height;
                 image.setImage(hammerOverhead);
             }
         }
@@ -174,13 +172,13 @@ public class Mario {
 
         calcHitbox();
 
-        if (hammerPos == 1 && hammer) {
-            image.setY(image.getY() - App.section_height);
-            rect.setLayoutY(rect.getLayoutY() - App.section_height);
-        } else {
-            image.setY(image.getY());
-            rect.setLayoutY(rect.getLayoutY());
-        }
+        // if (hammerPos == 1 && hammer) {
+        //     image.setY(image.getY() - App.section_height);
+        //     rect.setLayoutY(rect.getLayoutY() - App.section_height);
+        // } else {
+        //     image.setY(image.getY());
+        //     rect.setLayoutY(rect.getLayoutY());
+        // }
 
     }
 

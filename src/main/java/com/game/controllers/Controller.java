@@ -111,8 +111,8 @@ public class Controller implements Initializable {
     private void handleMenuItemAction(int selectedIndex) {
         switch (selectedIndex) {
             case 0:
-                selectPlayer();
-                
+                //selectPlayer();
+                newGame();
                 break;
             case 1 :
 
@@ -141,6 +141,15 @@ public class Controller implements Initializable {
         stage.setScene(scene);
         stage.show();
 
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        double centerX = screenBounds.getMinX() + (screenBounds.getWidth() - App.width) / 2;
+        double centerY = screenBounds.getMinY() + (screenBounds.getHeight() - App.height) / 2;
+        
+        stage.setX(centerX);
+        stage.setY(centerY);
+        stage.setScene(scene);
+
+
         Game game = new Game();
         game.run(root, gc , scene);
     }
@@ -150,25 +159,8 @@ public class Controller implements Initializable {
     
     public void selectPlayer() {
         // Load the new scene
-        Group root = new Group();
-        Canvas canvas = new Canvas(App.width, App.height);
-        root.getChildren().add(canvas);
-        GraphicsContext  gc = canvas.getGraphicsContext2D();
-        Scene scene = new Scene(root); 
-
-        Stage stage = (Stage) container.getScene().getWindow();
-        stage.show();
-
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        double centerX = screenBounds.getMinX() + (screenBounds.getWidth() - App.width) / 2;
-        double centerY = screenBounds.getMinY() + (screenBounds.getHeight() - App.height) / 2;
         
-        stage.setX(centerX);
-        stage.setY(centerY);
-        stage.setScene(scene);
-
-        Game game = new Game();
-        game.run(root, gc , scene);
+    
             
            
             Popup popup = new Popup();
@@ -189,7 +181,7 @@ public class Controller implements Initializable {
             popup.setAutoHide(true); 
 
         
-        
+        Stage stage = (Stage) container.getScene().getWindow();
         double ownerX = stage.getX();
         double ownerY = stage.getY();
         double ownerWidth = stage.getWidth();
