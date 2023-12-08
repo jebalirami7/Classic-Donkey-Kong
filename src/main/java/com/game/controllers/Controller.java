@@ -31,6 +31,7 @@ import main.java.com.game.SaveData;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 
 public class Controller  implements Initializable   {
@@ -191,9 +192,8 @@ public class Controller  implements Initializable   {
                         }
                     } catch (EmptyNameException e1) {
                         System.out.println("empty name");
-                        Platform.runLater(() -> {
-                            showError = true ;
-                        });
+                        showError = true ;
+
                         
                     }
 
@@ -201,7 +201,7 @@ public class Controller  implements Initializable   {
             }
         );
 
-
+        textField.requestFocus();
 
         VBox popupLayout = new VBox(10); 
         popupLayout.setAlignment(Pos.CENTER);
@@ -213,6 +213,7 @@ public class Controller  implements Initializable   {
                 KeyCode key = e.getCode();
                 if (key == KeyCode.ESCAPE || key == KeyCode.LEFT) {
                     popup.hide();
+                    showError = false;
                     showPlayers = false;
                 }
             }
@@ -239,7 +240,6 @@ public class Controller  implements Initializable   {
     public void selectPlayer() {
         VBox popupLayout = new VBox(10); 
         popupLayout.setAlignment(Pos.CENTER);
-        popupLayout.getChildren().clear();
         popupLayout.getChildren().addAll(tableView);
 
         popupLayout.requestFocus();
@@ -255,6 +255,7 @@ public class Controller  implements Initializable   {
             }
         });
 
+        popup.getContent().clear();
         popup.getContent().add(popupLayout);
 
         popupLayout.setMinSize(200, 50);
@@ -315,7 +316,7 @@ public class Controller  implements Initializable   {
     private void viewScoreBoard() {
         VBox popupLayout = new VBox(10); 
         popupLayout.setAlignment(Pos.CENTER);
-        popupLayout.getChildren().clear();
+        
         popupLayout.getChildren().addAll(scoreBoard);
 
         popupLayout.requestFocus();
@@ -330,6 +331,7 @@ public class Controller  implements Initializable   {
             }
         });
 
+        popup.getContent().clear();
         popup.getContent().add(popupLayout);
 
         popupLayout.setMinSize(200, 50);
@@ -357,8 +359,10 @@ public class Controller  implements Initializable   {
         TableColumn<Player, Integer> scoreColumn = new TableColumn<>("SCORE");
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
 
-        nameColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgba(0, 0, 0, 0.6);");
+        nameColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgba(0, 0, 0, 0.6); -fx");
         scoreColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgba(0, 0, 0, 0.6);");
+
+
 
         scoreBoard.getColumns().addAll(nameColumn, scoreColumn);
 
@@ -368,6 +372,6 @@ public class Controller  implements Initializable   {
         .toArray(Player[]::new);   
 
         scoreBoard.getItems().addAll(playersArray);
-        scoreBoard.getSelectionModel().selectFirst();
+        
     }
 }
