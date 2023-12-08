@@ -1,4 +1,4 @@
-package main.java.com.game;
+package main.java.com.game.models;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -14,6 +14,11 @@ public class Music {
 
     public void stop() {
         mediaPlayer.stop();
+    }
+
+
+    public void pause() {
+        mediaPlayer.pause();
     }
 
 

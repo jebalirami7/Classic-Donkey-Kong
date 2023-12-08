@@ -1,4 +1,4 @@
-package main.java.com.game;
+package main.java.com.game.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import main.java.com.game.App;
 
 public class Map {
     private Image dk1 = new Image("file:src/main/resources/assets/images/dk/dk1.png");

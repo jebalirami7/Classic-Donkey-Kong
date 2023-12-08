@@ -1,4 +1,4 @@
-package main.java.com.game;
+package main.java.com.game.models;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import main.java.com.game.App;
 
 public final class Barrel extends Enemy {
 

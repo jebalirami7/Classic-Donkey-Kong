@@ -1,4 +1,4 @@
-package main.java.com.game;
+package main.java.com.game.models;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -44,13 +44,10 @@ public class SaveData {
 
 
     public static void update(String playerName, int newScore) {
-        // Read existing players from the file into a map
         Map<String, Integer> playersMap = read();
 
-        // Update the score in the map
         playersMap.put(playerName, newScore);
 
-        // Write the updated information back to the file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (Map.Entry<String, Integer> entry : playersMap.entrySet()) {
                 writer.write("Name: " + entry.getKey() + "\n");

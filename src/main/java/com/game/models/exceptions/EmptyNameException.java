@@ -1,4 +1,4 @@
-package main.java.com.game;
+package main.java.com.game.models.exceptions;
 
 public class EmptyNameException extends Exception {
     public EmptyNameException() {

@@ -1,10 +1,11 @@
-package main.java.com.game;
+package main.java.com.game.models;
 
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import main.java.com.game.App;
 
 public class Hammer {
     

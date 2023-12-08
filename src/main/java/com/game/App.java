@@ -11,6 +11,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import main.java.com.game.models.Music;
 
 public class App extends Application {
 
@@ -31,8 +32,8 @@ public class App extends Application {
         try {
             stage.setTitle("Classic Donkey Kong");
 
-            // Music music = new Music("/main/resources/media/gameSound.wav");
-            // music.play();
+             //Music music = new Music("/main/resources/media/gameSound.wav");
+             //music.play();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/fxml/homeScreen.fxml"));
             Parent root = loader.load();

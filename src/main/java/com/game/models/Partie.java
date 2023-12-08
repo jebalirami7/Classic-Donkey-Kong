@@ -1,4 +1,4 @@
-package main.java.com.game;
+package main.java.com.game.models;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,6 +22,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.util.Pair;
+import main.java.com.game.App;
 
 public class Partie {
 
@@ -89,6 +90,7 @@ public class Partie {
     Music winAudio;
     Music loseAudio;
     Music gameOverAudio;
+    Music gameAudio;
 
     public Partie(Group root, Player p) {
         this.root = root;
@@ -100,7 +102,8 @@ public class Partie {
         map = new Map();
         winAudio = new Music("/main/resources/media/win.wav");
         loseAudio = new Music("/main/resources/media/reset.wav");
-        gameOverAudio = new Music("/main/resources/media/reset.wav");
+        gameOverAudio = new Music("/main/resources/media/gameOver.wav");
+        gameAudio = new Music("/main/resources/media/gameSound.wav");
     }
 
 
@@ -120,13 +123,15 @@ public class Partie {
             if (victory || gameOver || reset) {
                 gameTimeLine.stop();
                 if (gameOver) {
-                    loseAudio.play();
+                    gameAudio.stop();
+                    gameOverAudio.play();
                     new Timeline(new KeyFrame(Duration.seconds(2), e -> {
-                        loseAudio.stop();
+                        gameOverAudio.stop();
                         return;
                     })).play();
                 }
                 if (victory) {
+                    gameAudio.stop();
                     winAudio.play();   
                     new Timeline(new KeyFrame(Duration.seconds(2), e -> {
                         winAudio.stop();
@@ -182,6 +187,8 @@ public class Partie {
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         
         loseAudio.stop();
+
+        gameAudio.play();
 
         // Check Victory
         victory = map.getTargetRect().getBoundsInParent().intersects(mario.getRect().getBoundsInParent());
@@ -365,6 +372,7 @@ public class Partie {
                         menuText.setText("");
                         root.getChildren().remove(root.getChildren().size() - 1);
                     } else {
+                        gameAudio.pause();
                         gameTimeLine.pause();
                         paused = true;
                         root.getChildren().add(menu("Game Paused"));

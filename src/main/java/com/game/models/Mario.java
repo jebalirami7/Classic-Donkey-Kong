@@ -1,4 +1,4 @@
-package main.java.com.game;
+package main.java.com.game.models;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
+import main.java.com.game.App;
 
 public class Mario {
     private Image standing = new Image("file:src/main/resources/assets/images/mario/standing.png");
