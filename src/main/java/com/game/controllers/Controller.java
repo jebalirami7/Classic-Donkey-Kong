@@ -168,7 +168,7 @@ public class Controller  implements Initializable   {
 
         TextField textField = new TextField();
         Label title = new Label("Enter Player Name");
-        Label error = new Label("Nom Invalid");
+        Label error = new Label("Invalid Name");
         title.setFont(Font.font("Arial",18));
         title.setStyle("-fx-text-fill: WHITE; -fx-text-alignement: CENTER;");
 
@@ -180,26 +180,23 @@ public class Controller  implements Initializable   {
         textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent e) {
-                    try {
-                        if (e.getCode() == KeyCode.ENTER) {
-                            popup.hide();
-                            if (textField.getText().equals("")) throw new EmptyNameException();
-                            Player player = new Player(textField.getText(), 0);
-                            SaveData.write(player);
-                            tableView.getItems().add(player);
-                            newGame(player);
-                        
-                        }
-                    } catch (EmptyNameException e1) {
-                        System.out.println("empty name");
-                        showError = true ;
-
-                        
+                try {
+                    if (e.getCode() == KeyCode.ENTER) {
+                        popup.hide();
+                        if (textField.getText().equals("")) throw new EmptyNameException();
+                        Player player = new Player(textField.getText(), 0);
+                        SaveData.write(player);
+                        tableView.getItems().add(player);
+                        newGame(player);
                     }
-
+                } catch (EmptyNameException e1) {
+                    System.out.println("empty name");
+                    showError = true ; 
+                    showPlayers = false; 
                 }
+
             }
-        );
+        });
 
         textField.requestFocus();
 
@@ -258,8 +255,8 @@ public class Controller  implements Initializable   {
         popup.getContent().clear();
         popup.getContent().add(popupLayout);
 
-        popupLayout.setMinSize(200, 50);
-        popupLayout.setMaxSize(400, 148);   
+        popupLayout.setMinSize(300, 50);
+        popupLayout.setMaxSize(1000, 200); 
         popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10;");         
         popup.setAutoHide(true); 
 
@@ -284,16 +281,16 @@ public class Controller  implements Initializable   {
         TableColumn<Player, Integer> scoreColumn = new TableColumn<>("SCORE");
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
 
-        nameColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgba(0, 0, 0, 0.6);");
-        scoreColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgba(0, 0, 0, 0.6);");
+        nameColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Roboto; -fx-font-size: 20;");
+        scoreColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Arial; -fx-font-size: 20;");
+
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
         tableView.getColumns().addAll(nameColumn, scoreColumn);
 
         Player[] playersArray = SaveData.read().entrySet().stream()
         .map(entry -> new Player(entry.getKey(), entry.getValue()))
         .toArray(Player[]::new);
-
-        
 
         tableView.getItems().addAll(playersArray);
 
@@ -327,6 +324,7 @@ public class Controller  implements Initializable   {
                 KeyCode key = e.getCode();
                 if (key == KeyCode.ESCAPE || key == KeyCode.LEFT) {
                     popup.hide();
+                    showPlayers = false;
                 }
             }
         });
@@ -334,8 +332,8 @@ public class Controller  implements Initializable   {
         popup.getContent().clear();
         popup.getContent().add(popupLayout);
 
-        popupLayout.setMinSize(200, 50);
-        popupLayout.setMaxSize(400, 148);   
+        popupLayout.setMinSize(300, 50);
+        popupLayout.setMaxSize(1000, 200);   
         popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10;");         
         popup.setAutoHide(true); 
         
@@ -359,10 +357,10 @@ public class Controller  implements Initializable   {
         TableColumn<Player, Integer> scoreColumn = new TableColumn<>("SCORE");
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
 
-        nameColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgba(0, 0, 0, 0.6); -fx");
-        scoreColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgba(0, 0, 0, 0.6);");
+        nameColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Roboto; -fx-font-size: 20;");
+        scoreColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Arial; -fx-font-size: 20;");
 
-
+        scoreBoard.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
         scoreBoard.getColumns().addAll(nameColumn, scoreColumn);
 

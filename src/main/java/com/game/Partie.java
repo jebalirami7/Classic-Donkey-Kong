@@ -86,6 +86,9 @@ public class Partie {
 
     Pair<Integer, Integer> playerPosition = new Pair<>(7 * App.section_width, (int) App.height - 6 * App.section_height);
 
+    Music winAudio;
+    Music loseAudio;
+    Music gameOverAudio;
 
     public Partie(Group root, Player p) {
         this.root = root;
@@ -95,7 +98,9 @@ public class Partie {
         highScore = p.getScore();
         levels = new ArrayList<Level>();
         map = new Map();
-
+        winAudio = new Music("/main/resources/media/win.wav");
+        loseAudio = new Music("/main/resources/media/reset.wav");
+        gameOverAudio = new Music("/main/resources/media/reset.wav");
     }
 
 
@@ -105,15 +110,29 @@ public class Partie {
         bridge_objs = map.getBridges();
         ladder_objs = map.getLadders();
         hammer_objs = map.getHammers();
-        
+
         root.getChildren().addAll(scoreText, highScoreText, symbolText, columnsText, infoText);
-                
+
         mario = new Mario(playerPosition.getKey(), playerPosition.getValue(), root);
 
         gameTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
             renderGame(gc, scene);
             if (victory || gameOver || reset) {
                 gameTimeLine.stop();
+                if (gameOver) {
+                    loseAudio.play();
+                    new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+                        loseAudio.stop();
+                        return;
+                    })).play();
+                }
+                if (victory) {
+                    winAudio.play();   
+                    new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+                        winAudio.stop();
+                        return;
+                    })).play();                 
+                }
                 if (reset) {
                     new Timeline(new KeyFrame(Duration.seconds(1), e -> {
                         gameTimeLine.playFromStart();
@@ -127,6 +146,7 @@ public class Partie {
         gameTimeLine.play();
         
     }
+
     
     private void restartGame() {
         score = 0;
@@ -160,6 +180,8 @@ public class Partie {
         // Draw Background
         gc.setFill(javafx.scene.paint.Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        
+        loseAudio.stop();
 
         // Check Victory
         victory = map.getTargetRect().getBoundsInParent().intersects(mario.getRect().getBoundsInParent());
@@ -261,6 +283,7 @@ public class Partie {
         }
 
         if (attempts > 1 && !reset) { 
+            loseAudio.play();
             reset = true;
             return;
         }
@@ -335,7 +358,7 @@ public class Partie {
                         mario.setClimbing(true);
                     }
                 }
-                if (key == KeyCode.P || key == KeyCode.ESCAPE) {
+                if ((key == KeyCode.P || key == KeyCode.ESCAPE) && !victory && !gameOver) {
                     if (paused) {
                         gameTimeLine.play();
                         paused = false;

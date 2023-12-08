@@ -31,16 +31,8 @@ public class App extends Application {
         try {
             stage.setTitle("Classic Donkey Kong");
 
-            // // Music winAudio = new Music("/main/resources/media/win.wav");
-            // // winAudio.play();
-
-            // File url = new File("/home/rami/Desktop/donkey-kong/src/main/resources/media/win.wav");
-            String url = getClass().getResource("/main/resources/media/test.mp3").toString();
-            System.out.println(url);
-            Media media = new Media(url);
-            MediaPlayer p = new MediaPlayer(media);
-            //p.play();
-
+            // Music music = new Music("/main/resources/media/gameSound.wav");
+            // music.play();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/fxml/homeScreen.fxml"));
             Parent root = loader.load();
