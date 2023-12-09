@@ -23,7 +23,7 @@ public class Mario {
     private double imageWidth = 2 * App.section_width;
     private double imageHeight = 2.5 * App.section_height;
     private double y_change = 0;
-    private double x_speed = 3;
+    private double x_speed = App.section_width * 4 / 35;
     private double x_change = 0;
     private boolean landed = false;
     private double pos = 0;
@@ -40,7 +40,6 @@ public class Mario {
     private Rectangle bottom;
 
     public Mario(double x, double y, Group root) {
-        // Set up the image and position
         image = new ImageView(standing);
         image.setCache(true);
         image.setFitWidth(imageWidth);
@@ -101,7 +100,7 @@ public class Mario {
         }
 
         if (!landed && !climbing) {
-            y_change +=0.25;
+            y_change += App.section_height * 0.25 / 29;
         }
 
         image.setX(image.getX() + x_change * x_speed);

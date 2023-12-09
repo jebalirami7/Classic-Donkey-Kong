@@ -8,8 +8,6 @@ import javafx.scene.shape.Rectangle;
 
 public class Level {
     
-    private String name;
-
     private List<List<Integer>> bridges;
     private ArrayList<Bridge> bridge_objs = new ArrayList<Bridge>();
 
@@ -22,8 +20,7 @@ public class Level {
     private List<Integer> target;
     Rectangle targetRect = new Rectangle();
 
-    public Level(String name, List<List<Integer>> bridges, List<List<Integer>> ladders, List<List<Integer>> hammers, List<Integer> target) {
-        this.name = name;
+    public Level(List<List<Integer>> bridges, List<List<Integer>> ladders, List<List<Integer>> hammers, List<Integer> target) {
         this.bridges = bridges;
         this.ladders = ladders;
         this.hammers = hammers;

@@ -36,7 +36,7 @@ public class Hammer {
     public void draw(Mario player) {
         if (!used) {
             if (rect.getBoundsInParent().intersects(player.getHitbox().getBoundsInParent())) {
-                hammer.setImage(null);  // kill()
+                hammer.setImage(null);
                 player.setHammer(true);
                 player.setHammerLen(player.getMaxHammer());
                 used = true;

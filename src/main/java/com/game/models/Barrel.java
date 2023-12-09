@@ -22,7 +22,7 @@ public final class Barrel extends Enemy {
 
 
     public Barrel(double x, double y, Group root) {
-        super(x, y, 50, 50, 0, root);
+        super(x, y, (double)App.section_width * 50 / 35, (double)App.section_height * 50 / 29, 0, root);
         image.setImage(barrelImage);
     }
 
@@ -31,7 +31,7 @@ public final class Barrel extends Enemy {
         boolean fireTrigger = false;
 
         if (y_change < 8 && !falling) 
-            y_change += 0.5; //0.02, 1
+            y_change += App.section_height * 0.5 / 29;
 
         for(int i=0; i<plats.size(); i++) {
             if (rect.getBoundsInParent().intersects(plats.get(i).getTop().getBoundsInParent())) {
@@ -52,9 +52,9 @@ public final class Barrel extends Enemy {
         if (!falling) {
             double rectBottom = rect.getLayoutY() + width;
             if (row5_top > rectBottom || (row3_top > rectBottom && rectBottom > row4_top) || (row1_top > rectBottom && rectBottom > row2_top)) {
-                x_change = 3; //0.5, 3
+                x_change = (double)App.section_width * 3 / 35;
             } else {
-                x_change = -3;
+                x_change = -(double)App.section_width * 3 / 35;
             }
         } else {
             x_change = 0;
@@ -70,8 +70,8 @@ public final class Barrel extends Enemy {
         else {
             count = 0;
             if (x_change > 0)
-                if (pos < 3) //4
-                    pos += 0.5; //0.1, 1
+                if (pos < 3) 
+                    pos += 0.5;
                 else
                     pos = 0;
             else
@@ -81,7 +81,6 @@ public final class Barrel extends Enemy {
                     pos = 3;
         }
 
-        // Rotate the barrel
         image.setRotate(90 * pos);  
 
         return fireTrigger;
@@ -101,8 +100,6 @@ public final class Barrel extends Enemy {
                 ladrectLine.setStroke(Color.BLUE); 
                 ladrectLine.setStrokeWidth(3);
                 root.getChildren().addAll(ladTopLine, ladrectLine);
-
-                // ladBody.setFill(Color.RED);   // change color to ckeck its position
                 
                 if (below.getBoundsInParent().intersects(ladTopLine.getBoundsInParent()) && !falling && !checkLad) {
                     checkLad = true;

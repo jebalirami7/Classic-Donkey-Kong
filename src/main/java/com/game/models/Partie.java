@@ -202,7 +202,7 @@ public class Partie {
         } else {
             barrelCount = new Random().nextInt(180);
             barrelTime = barrelSpawnTime - barrelCount;
-            Barrel barrel = new Barrel(270, 250, root);
+            Barrel barrel = new Barrel(App.width * 270 / 1120, row6_top - (double)App.section_height * 50 / 29, root);
             barrels.add(barrel);
         }
 
@@ -347,12 +347,12 @@ public class Partie {
                 if (key == KeyCode.SPACE && mario.isLanded() && !mario.getHammer()) {
                     // System.out.println("jumping");
                     mario.setLanded(false);
-                    mario.setY_change(-5.5);
+                    mario.setY_change(-App.section_height * 5.5 / 29);
                 }
                 if ((key == KeyCode.UP || key == KeyCode.Z) && !mario.getHammer()) {
                     if (climb) {
                         // System.out.println("climbing up");
-                        mario.setY_change(-2);
+                        mario.setY_change(-App.section_height * 2 / 29);
                         mario.setX_change(0);
                         mario.setClimbing(true);
                     }
@@ -360,7 +360,7 @@ public class Partie {
                 if ((key == KeyCode.DOWN || key == KeyCode.S) && !mario.getHammer()) {
                     if (down) {
                         // System.out.println("climbing down");
-                        mario.setY_change(2);
+                        mario.setY_change(App.section_height * 2 / 29);
                         mario.setX_change(0);
                         mario.setClimbing(true);
                     }
@@ -458,14 +458,14 @@ public class Partie {
         
         Text text = new Text();
         text.setText(s);
-        text.setFont(Font.font("Arial", 80)); 
+        text.setFont(Font.font("Arial", App.section_width * 80 / 35)); 
         text.setFill(Color.WHITE);
 
         Label replayLabel = new Label("REPLAY");
-        replayLabel.setFont(Font.font("Arial", 50));
+        replayLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
         replayLabel.setStyle("-fx-text-fill: WHITE;");
         Label exitLabel = new Label("EXIT");
-        exitLabel.setFont(Font.font("Arial", 50));
+        exitLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
         exitLabel.setStyle("-fx-text-fill: WHITE;");
 
         menuItems = new Label[]{replayLabel, exitLabel};
@@ -489,8 +489,8 @@ public class Partie {
 
 
     public void drawText() {
-        Font font = Font.font("Arial", 50);
-        Font font2 = Font.font("Arial", 30);
+        Font font = Font.font("Arial", App.section_width * 50 / 35);
+        Font font2 = Font.font("Arial", App.section_width * 30 / 35);
 
         scoreText.setText("I•" + score);
         scoreText.setFont(font); 

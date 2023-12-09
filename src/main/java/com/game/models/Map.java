@@ -53,7 +53,7 @@ public class Map {
     private Rectangle targetRect = new Rectangle();
     
     public Map() {
-
+        System.out.println(App.section_height + " " + App.section_width);
     }
 
     public void draw (Group root) {
@@ -62,7 +62,7 @@ public class Map {
         drawBarrels(root);
 
         // Create level 1 
-        lvl1 = new Level("LEVEL 1",
+        lvl1 = new Level(
             List.of(
                 List.of(1, start_y, 15), List.of(16, start_y - App.slope, 3),
                 List.of(19, start_y - 2 * App.slope, 3), List.of(22, start_y - 3 * App.slope, 3),
@@ -121,10 +121,10 @@ public class Map {
         dk.setX(3.5 * App.section_width);
         dk.setY(row6_y - 5.5 * App.section_height);
         barrelImgView.setCache(true);
-        barrelImgView.setFitWidth(50);
-        barrelImgView.setFitHeight(50);
-        barrelImgView.setX(230);
-        barrelImgView.setY(250);
+        barrelImgView.setFitWidth((double)App.section_width * 50 / 35);
+        barrelImgView.setFitHeight((double)App.section_height * 50 / 29);
+        barrelImgView.setX(App.width * 230 / 1120);
+        barrelImgView.setY(row6_top - (double)App.section_height * 50 / 29);
 
         // Draw Peach
         peach.setCache(true);
@@ -168,16 +168,13 @@ public class Map {
         Rectangle z = new Rectangle(x_coord, y_coord + 1.7 * App.section_height, 2 * App.section_width, .2 * App.section_height);
         z.setFill(Color.LIGHTBLUE);
 
-        // Add Text In The Oil Drum
         Text oilText = new Text("OIL");
-        oilText.setFont(Font.font("Arial", 30)); 
+        oilText.setFont(Font.font("Arial", App.section_width * 30 / 35)); 
         oilText.setFill(Color.LIGHTBLUE);
 
-        // Set the position of the text
         oilText.setLayoutX(x_coord + 0.4 * App.section_width);
         oilText.setLayoutY(y_coord + 1.55 * App.section_height);
 
-        // Add The Element To The Scene
         root.getChildren().addAll(oil, oilTop, oilBottom, x, y, z, oilText);
 
         // Draw 4 Red Circles
@@ -187,7 +184,7 @@ public class Map {
             root.getChildren().add(circle);
         }
 
-        // Draw Flames On Top Of The Oil Drum
+        // Draw Flame On Top Of The Oil Drum
         fireImg.setCache(true);
         fireImg.setFitWidth(2 * App.section_width);
         fireImg.setFitHeight(App.section_height);
@@ -195,7 +192,6 @@ public class Map {
         fireImg.setX(x_coord);
         fireImg.setY(y_coord - App.section_height);
 
-        // Set A fireCounter To Increment Every Second        
         Timeline fireTimeLine = new Timeline(new KeyFrame(Duration.millis(15), event -> {
             if (fireCounter < 15 || (fireCounter > 30 && fireCounter < 45)) {
                 fireImg.setScaleX(1);
@@ -206,7 +202,7 @@ public class Map {
                 fireCounter++;
             else fireCounter =0;
         }));
-        fireTimeLine.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
+        fireTimeLine.setCycleCount(Timeline.INDEFINITE);
         fireTimeLine.play();
         
         return oil;
@@ -217,7 +213,7 @@ public class Map {
     public void drawBarrels(Group root) {
         // Draw 4 Barrels On The Top-Left Corner
         List<Double> dx = List.of(1.2, 1.2, 2.5, 2.5);
-        List<Double> dy = List.of(5.4, 7.7, 7.7, 5.4);
+        List<Double> dy = List.of(1.0, 1.9, 1.9, 1.0);
         Image barrelNextToKong = new Image("file:src/main/resources/assets/images/barrels/barrel2.png");
         for(int i=0; i<4 ;i++) {
             ImageView barrel = new ImageView(barrelNextToKong);
@@ -225,7 +221,7 @@ public class Map {
             barrel.setFitWidth(2 * App.section_width);
             barrel.setFitHeight(2.5 * App.section_height);
             barrel.setX(dx.get(i) * App.section_width);
-            barrel.setY(dy.get(i) * App.section_height);
+            barrel.setY(row6_top - 2.5 * App.section_height * dy.get(i));
             barrel.setRotate(90);
             root.getChildren().add(barrel);
         }

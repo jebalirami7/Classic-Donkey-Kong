@@ -22,7 +22,7 @@ public class Ladder {
 
 
     private Rectangle draw(Group root) {
-        int line_width = 3;
+        double line_width = App.section_width * 3 / 35;
         Color color = Color.LIGHTBLUE;
         double lad_height = 0.6;
 
@@ -33,7 +33,6 @@ public class Ladder {
             double left_coord = this.x_pos;
             double right_coord = left_coord + App.section_width;
             
-            // Create 3 lines
             Line line1 = new Line(left_coord, top_coord, left_coord, bot_coord);
             line1.setStroke(color); 
             line1.setStrokeWidth(line_width);
@@ -46,13 +45,11 @@ public class Ladder {
             line3.setStroke(color); 
             line3.setStrokeWidth(line_width);
 
-            // Add the new lines to the existing scene
             root.getChildren().addAll(line1, line2, line3);
         }
 
-        // Create Top Line 
         Rectangle body = new Rectangle(this.x_pos, this.y_pos - App.section_height, App.section_width, lad_height * this.length * App.section_height + App.section_height);
-        body.setFill(Color.TRANSPARENT);   // change color to ckeck its position
+        body.setFill(Color.TRANSPARENT); 
 
         root.getChildren().add(body);
 

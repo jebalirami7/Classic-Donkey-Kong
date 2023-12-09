@@ -20,16 +20,16 @@ public final class FireBall extends Enemy {
     public FireBall(double x, double y, Group root) {
         super(x, y, 2 * App.section_height, 1.5 * App.section_width, 1, root);
         image.setImage(image1);
-        x_change = 2;
+        x_change = App.section_width * 2 / 35;
     }
 
     public void update(ArrayList<Bridge> plats) {
         if (y_change < 3 && !climbing) 
-            y_change += 0.25;
+            y_change += App.section_height * 0.25 / 29;
 
         for(int i=0; i<plats.size(); i++) {
             if (rect.getBoundsInParent().intersects(plats.get(i).getTop().getBoundsInParent())) {
-                y_change = -4;
+                y_change = -App.section_height * 4 / 29;
                 climbing = false;
             }
         }
@@ -41,7 +41,7 @@ public final class FireBall extends Enemy {
             pos *= -1;
             if (x_count < x_max)
                 x_count += 1;
-            else {  // row 1,3 and 5 - go further right than left overall, otherwise flip it
+            else {  
                 x_count = 0;
                 if (x_change > 0)
                     if (row == 1 || row == 3 || row == 5)
@@ -81,10 +81,6 @@ public final class FireBall extends Enemy {
         image.setY(image.getY() + y_change);
         rect.setLayoutX(rect.getLayoutX() + x_change);
         rect.setLayoutY(rect.getLayoutY() + y_change);
-        
-        // Destroy the image
-        // if rect.top > screen_height or rect.top < 0
-        //     kill()
 
     }
 
@@ -98,7 +94,7 @@ public final class FireBall extends Enemy {
                 // System.out.println(this.rect.getLayoutX() + " " + this.rect.getLayoutY());
                 if (new Random().nextInt(1) == 0) {
                     climbing = true;
-                    y_change = -4;
+                    y_change = -App.section_height * 4 / 29;
                     image.setY(image.getY() + y_change);
                     rect.setLayoutY(rect.getLayoutY() + y_change);
                 }

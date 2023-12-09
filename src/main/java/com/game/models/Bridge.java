@@ -23,7 +23,7 @@ public class Bridge {
 
 
     private Rectangle draw(Group root) {
-        int line_width = 6;
+        double line_width = App.section_width * 6 / 35;
         Color color = Color.rgb(225, 51, 129);
 
         for(int i=0; i<this.length; i++) {
@@ -33,7 +33,6 @@ public class Bridge {
             double right_coord = left_coord + App.section_width;
             double top_coord = this.y_pos;
             
-            // Create 4 lines
             Line line1 = new Line(left_coord, top_coord, right_coord, top_coord);
             line1.setStroke(color); 
             line1.setStrokeWidth(line_width);
@@ -50,13 +49,11 @@ public class Bridge {
             line4.setStroke(color); 
             line4.setStrokeWidth(line_width);
 
-            // Add the new lines to the existing scene
             root.getChildren().addAll(line1, line2, line3, line4);
         }
 
-        // Create Top Line 
         Rectangle topLine = new Rectangle(x_pos, y_pos, this.length * App.section_width, 2);
-        topLine.setFill(Color.TRANSPARENT);   // change color to ckeck its position
+        topLine.setFill(Color.TRANSPARENT);
 
         root.getChildren().add(topLine);
 
