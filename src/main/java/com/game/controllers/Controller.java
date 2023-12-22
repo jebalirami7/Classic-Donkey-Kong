@@ -1,7 +1,6 @@
 package main.java.com.game.controllers;
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 

@@ -27,7 +27,7 @@ public class Map {
     private final ImageView dk = new ImageView();
     private final ImageView peach = new ImageView(new Image("file:src/main/resources/assets/images/peach/peach2.png"));
 
-    private Level lvl1;
+    private ArrayList<Level> levels = new ArrayList<Level>();
 
     private int start_y = (int)App.height - 2 * App.section_height;
     private int row2_y = start_y - 4 * App.section_height;
@@ -51,18 +51,18 @@ public class Map {
 
     private Rectangle oilDrum;
     private Rectangle targetRect = new Rectangle();
+
+    Group root;
     
-    public Map() {
+    public Map(Group root) {
+        this.root = root;
         System.out.println(App.section_height + " " + App.section_width);
     }
 
-    public void draw (Group root) {
-        // Draw Extras
-        oilDrum = drawOil(root);
-        drawBarrels(root);
 
+    private void createLevels() {
         // Create level 1 
-        lvl1 = new Level(
+        levels.add(new Level(root, Color.rgb(225, 51, 129),
             List.of(
                 List.of(1, start_y, 15), List.of(16, start_y - App.slope, 3),
                 List.of(19, start_y - 2 * App.slope, 3), List.of(22, start_y - 3 * App.slope, 3),
@@ -108,11 +108,71 @@ public class Map {
                 List.of(3 * App.section_width, row4_top + App.section_height)
             ),
             List.of(10, row6_y - 5* App.section_height, 5)
-        );
+        ));
 
-        ladder_objs = lvl1.createLadders(root);
-        bridge_objs = lvl1.createBridges(root);
-        hammer_objs = lvl1.createHammers(root);
+        // Create level 2 
+        levels.add(new Level(root, Color.BLUE,
+            List.of(
+                List.of(1, start_y, 15), List.of(16, start_y - App.slope, 3),
+                List.of(19, start_y - 2 * App.slope, 3), List.of(22, start_y - 3 * App.slope, 3),
+                List.of(25, start_y - 4 * App.slope, 3), List.of(28, start_y - 5 * App.slope, 3),
+                List.of(25, row2_y, 3), List.of(22, row2_y - App.slope, 3),
+                List.of(19, row2_y - 2 * App.slope, 3), List.of(16, row2_y - 3 * App.slope, 3),
+                List.of(13, row2_y - 4 * App.slope, 3), List.of(10, row2_y - 5 * App.slope, 3),
+                List.of(7, row2_y - 6 * App.slope, 3), List.of(4, row2_y - 7 * App.slope, 3),
+                List.of(2, row2_y - 8 * App.slope, 2), List.of(4, row3_y, 3),
+                List.of(7, row3_y - App.slope, 3), List.of(10, row3_y - 2 * App.slope, 3),
+                List.of(13, row3_y - 3 * App.slope, 3), List.of(16, row3_y - 4 * App.slope, 3),
+                List.of(19, row3_y - 5 * App.slope, 3), List.of(22, row3_y - 6 * App.slope, 3),
+                List.of(25, row3_y - 7 * App.slope, 3), List.of(28, row3_y - 8 * App.slope, 2),
+                List.of(25, row4_y, 3), List.of(22, row4_y - App.slope, 3),
+                List.of(19, row4_y - 2 * App.slope, 3), List.of(16, row4_y - 3 * App.slope, 3),
+                List.of(13, row4_y - 4 * App.slope, 3), List.of(10, row4_y - 5 * App.slope, 3),
+                List.of(7, row4_y - 6 * App.slope, 3), List.of(4, row4_y - 7 * App.slope, 3),
+                List.of(2, row4_y - 8 * App.slope, 2), List.of(4, row5_y, 3),
+                List.of(7, row5_y - App.slope, 3), List.of(10, row5_y - 2 * App.slope, 3),
+                List.of(13, row5_y - 3 * App.slope, 3), List.of(16, row5_y - 4 * App.slope, 3),
+                List.of(19, row5_y - 5 * App.slope, 3), List.of(22, row5_y - 6 * App.slope, 3),
+                List.of(25, row5_y - 7 * App.slope, 3), List.of(28, row5_y - 8 * App.slope, 2),
+                List.of(25, row6_y, 3), List.of(22, row6_y - App.slope, 3),
+                List.of(19, row6_y - 2 * App.slope, 3), List.of(16, row6_y - 3 * App.slope, 3),
+                List.of(2, row6_y - 4 * App.slope, 14), List.of(13, row6_y - 4 * App.section_height, 6),
+                List.of(10, row6_y - 3 * App.section_height, 3)
+            ),
+            List.of(
+                List.of(12, row2_y + 6 * App.slope, 2), List.of(12, row2_y + 26 * App.slope, 2),
+                List.of(25, row2_y + 11 * App.slope, 4), List.of(6, row3_y + 11 * App.slope, 3),
+                List.of(14, row3_y + 8 * App.slope, 4), List.of(10, row4_y + 6 * App.slope, 1),
+                List.of(10, row4_y + 24 * App.slope, 2), List.of(16, row4_y + 6 * App.slope, 5),
+                List.of(25, row4_y + 9 * App.slope, 4), List.of(6, row5_y + 11 * App.slope, 3),
+                List.of(11, row5_y + 8 * App.slope, 4), List.of(23, row5_y + 4 * App.slope, 1),
+                List.of(23, row5_y + 24 * App.slope, 2), List.of(25, row6_y + 9 * App.slope, 4),
+                List.of(13, row6_y + 5 * App.slope, 2), List.of(13, row6_y + 25 * App.slope, 2),
+                List.of(18, row6_y - 27 * App.slope, 4), List.of(12, row6_y - 17 * App.slope, 2),
+                List.of(10, row6_y - 17 * App.slope, 2), List.of(12, -5, 13), List.of(10, -5, 13)
+            ),
+            List.of(        
+
+                List.of(3 * App.section_width, row6_top + App.section_height), 
+                List.of(3 * App.section_width, row4_top + App.section_height)
+            ),
+            List.of(10, row6_y - 5* App.section_height, 5)
+        ));
+    }
+
+
+    public void draw (int activeLevel) {
+        if (activeLevel == 0) {
+            // Draw Extras
+            oilDrum = drawOil();
+            drawBarrels();
+        }
+
+        createLevels();
+
+        ladder_objs = levels.get(activeLevel).createLadders();
+        bridge_objs = levels.get(activeLevel).createBridges();
+        hammer_objs = levels.get(activeLevel).createHammers();
 
         // Draw Kong
         dk.setCache(true);
@@ -135,12 +195,10 @@ public class Map {
 
 
         // Set Victory Position
-        targetRect.setX(lvl1.getTarget().get(0) * App.section_width);
-        targetRect.setY(lvl1.getTarget().get(1));
-        targetRect.setWidth(lvl1.getTarget().get(2) * App.section_width);
+        targetRect.setX(levels.get(activeLevel).getTarget().get(0) * App.section_width);
+        targetRect.setY(levels.get(activeLevel).getTarget().get(1));
+        targetRect.setWidth(levels.get(activeLevel).getTarget().get(2) * App.section_width);
         targetRect.setHeight(50);
-
-
 
         // Add all elements to the root (to be seen)
         root.getChildren().addAll(barrelImgView, dk, peach);
@@ -148,7 +206,13 @@ public class Map {
     }
 
 
-    public Rectangle drawOil(Group root) {
+    public void destroy(int lvl) {
+        root.getChildren().removeAll(barrelImgView, dk, peach);
+        levels.get(lvl).destroy();
+    }
+
+
+    public Rectangle drawOil() {
         double x_coord = 4 * App.section_width;
         double y_coord = App.height - 4.5 * App.section_height;
 
@@ -210,7 +274,7 @@ public class Map {
 
 
 
-    public void drawBarrels(Group root) {
+    public void drawBarrels() {
         // Draw 4 Barrels On The Top-Left Corner
         List<Double> dx = List.of(1.2, 1.2, 2.5, 2.5);
         List<Double> dy = List.of(1.0, 1.9, 1.9, 1.0);
@@ -232,7 +296,7 @@ public class Map {
     }
 
 
-    public void animateKong(Group root, int barrelTime, int barrelSpawnTime, int barrelCount) {
+    public void animateKong(int barrelTime, int barrelSpawnTime, int barrelCount) {
         int phaseTime = barrelTime / 4;
         dk.setScaleX(1);
         barrelImgView.setImage(null);
@@ -269,8 +333,8 @@ public class Map {
     }
 
 
-    public void drawHammers(Group root) {
-        lvl1.createHammers(root);
+    public void drawHammers(int activeLevel) {
+        levels.get(activeLevel).createHammers();
     }
 
 

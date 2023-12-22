@@ -99,7 +99,7 @@ public class Partie {
         attempts = 3;
         highScore = p.getScore();
         levels = new ArrayList<Level>();
-        map = new Map();
+        map = new Map(root);
         winAudio = new Music("/main/resources/media/win.wav");
         loseAudio = new Music("/main/resources/media/reset.wav");
         gameOverAudio = new Music("/main/resources/media/gameOver.wav");
@@ -109,7 +109,7 @@ public class Partie {
 
     public void createPartie(GraphicsContext gc, Scene scene) {
     
-        map.draw(root);
+        map.draw(activeLevel);
         bridge_objs = map.getBridges();
         ladder_objs = map.getLadders();
         hammer_objs = map.getHammers();
@@ -167,11 +167,43 @@ public class Partie {
         }
         fireBalls.clear();
         for (Hammer hammer : hammer_objs) {
-            hammer.clear(root);
+            hammer.clear();
         }
         hammer_objs.clear();
 
-        map.drawHammers(root);
+        map.drawHammers(activeLevel);
+        mario.reset(playerPosition.getKey(), playerPosition.getValue());
+        fireBallTrigger = false;
+        barrelCount = barrelSpawnTime / 2;
+        reset = false;
+        victory = false;
+        gameOver = false;
+    }
+
+
+    private void nextLevel() {
+        attempts++;
+        bonus += 6000;
+        
+        for(Barrel barrel : barrels) {
+            barrel.clear(root);
+        }
+        barrels.clear();
+        for(FireBall fireBall : fireBalls) {
+            fireBall.clear(root);
+        }
+        fireBalls.clear();
+        for (Hammer hammer : hammer_objs) {
+            hammer.clear();
+        }
+        hammer_objs.clear();
+
+        map.destroy(activeLevel - 1);
+        map.draw(activeLevel);
+        bridge_objs = map.getBridges();
+        ladder_objs = map.getLadders();
+        hammer_objs = map.getHammers();
+        map.drawHammers(activeLevel);
         mario.reset(playerPosition.getKey(), playerPosition.getValue());
         fireBallTrigger = false;
         barrelCount = barrelSpawnTime / 2;
@@ -246,7 +278,7 @@ public class Partie {
             hammer.draw(mario);
         }
 
-        map.animateKong(root, barrelTime, barrelSpawnTime, barrelCount);
+        map.animateKong(barrelTime, barrelSpawnTime, barrelCount);
         drawText();
 
         mario.update(bridge_objs);
@@ -304,7 +336,7 @@ public class Partie {
         }
         fireBalls.clear();
         for (Hammer hammer : hammer_objs) {
-            hammer.clear(root);
+            hammer.clear();
         }
         hammer_objs.clear();
 
@@ -313,7 +345,7 @@ public class Partie {
         
         if (attempts > 1) {
             attempts --;           
-            map.drawHammers(root);
+            map.drawHammers(activeLevel);
             mario.reset(playerPosition.getKey(), playerPosition.getValue());
             fireBallTrigger = false;
             barrelCount = barrelSpawnTime / 2;
@@ -412,13 +444,13 @@ public class Partie {
         }
     }
     private void moveUP() {
-        selectedIndex = (selectedIndex -1) ;
+        selectedIndex--;
         if (selectedIndex < 0) selectedIndex = menuItems.length -1 ;
         updateSelection();
         
     }
     private void moveDOWN() {
-        selectedIndex = selectedIndex +1 ;
+        selectedIndex++;
         if (selectedIndex >= menuItems.length) selectedIndex = 0;
         updateSelection();
         
@@ -433,19 +465,25 @@ public class Partie {
         }
     }
     private void handleMenuItemAction(int selectedIndex) {
-        switch (selectedIndex) {
-            case 0:
-                System.out.println(selectedIndex);
-                gameTimeLine.playFromStart();
-                paused = false;
-                menuText.setText("");
-                root.getChildren().remove(root.getChildren().size() - 1);
-                restartGame();
-                break;
-            case 1:
-                Platform.exit();
-            default:
-                break;
+        if (selectedIndex == 0 && menuItems.length == 2 || selectedIndex == 1 && menuItems.length == 3) {
+            System.out.println(selectedIndex);
+            gameTimeLine.playFromStart();
+            paused = false;
+            menuText.setText("");
+            root.getChildren().remove(root.getChildren().size() - 1);
+            restartGame();
+        } else if (selectedIndex == 0 && menuItems.length == 3) {
+            root.getChildren().remove(root.getChildren().size() - 1);
+            if (victory) {
+                activeLevel++;
+                System.out.println("Congrats You Passed To Level " + (activeLevel + 2));
+                nextLevel();
+            }
+            gameTimeLine.play();
+            paused = false;
+            menuText.setText("");
+        } else if (selectedIndex == menuItems.length - 1) {
+            Platform.exit();
         }
     }
 
@@ -460,7 +498,14 @@ public class Partie {
         text.setText(s);
         text.setFont(Font.font("Arial", App.section_width * 80 / 35)); 
         text.setFill(Color.WHITE);
+        vbox.getChildren().add(text);
 
+        Label resumeLabel = new Label("RESUME");
+        resumeLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
+        resumeLabel.setStyle("-fx-text-fill: WHITE;");
+        Label nextLevelLabel = new Label("NEXT LEVEL");
+        nextLevelLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
+        nextLevelLabel.setStyle("-fx-text-fill: WHITE;");
         Label replayLabel = new Label("REPLAY");
         replayLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
         replayLabel.setStyle("-fx-text-fill: WHITE;");
@@ -468,7 +513,16 @@ public class Partie {
         exitLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
         exitLabel.setStyle("-fx-text-fill: WHITE;");
 
-        menuItems = new Label[]{replayLabel, exitLabel};
+        if (s == "Game Paused") {
+            menuItems = new Label[]{resumeLabel, replayLabel, exitLabel};
+            vbox.getChildren().add(resumeLabel);
+        } else if (s == "You Win") {
+            menuItems = new Label[]{nextLevelLabel, replayLabel, exitLabel};
+            vbox.getChildren().add(nextLevelLabel);
+        } else {
+            menuItems = new Label[]{replayLabel, exitLabel};
+        }
+
         selectedIndex = 0;
         updateSelection();
         for (Label menuItem : menuItems) {
@@ -480,17 +534,17 @@ public class Partie {
 
         Platform.runLater(() -> {
             vbox.setLayoutX((App.width - text.getLayoutBounds().getWidth()) / 2 - 30);
-            vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight())) / 2 - 30);
+            vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + nextLevelLabel.getLayoutBounds().getHeight() + resumeLabel.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight())) / 2 - 30);
         });
         
-        vbox.getChildren().addAll(text, replayLabel, exitLabel);
+        vbox.getChildren().addAll(replayLabel, exitLabel);
         return vbox;
     }
 
 
     public void drawText() {
         Font font = Font.font("Arial", App.section_width * 50 / 35);
-        Font font2 = Font.font("Arial", App.section_width * 30 / 35);
+        Font font2 = Font.font("Arial", App.section_width * 28 / 35);
 
         scoreText.setText("I•" + score);
         scoreText.setFont(font); 
@@ -510,16 +564,18 @@ public class Partie {
         symbolText.setX(20 * App.section_width);
         symbolText.setY(5 * App.section_height);
 
-        columnsText.setText("  ♥     BONUS      L ");
+        columnsText.setText("  ♥     BONUS     L ");
         columnsText.setFont(font2); 
         columnsText.setFill(Color.WHITE);
         columnsText.setX(20 * App.section_width + 5);
         columnsText.setY(4 * App.section_height);
 
-        if (bonus >= 1000)
-            infoText.setText("  " + attempts + "       " + bonus + "        " + (activeLevel + 1));
+        if (bonus >= 10000)
+            infoText.setText("  " + attempts + "       " + bonus + "       " + (activeLevel + 1));
+        else if (bonus >= 1000)
+            infoText.setText("  " + attempts + "        " + bonus + "        " + (activeLevel + 1));
         else 
-            infoText.setText("  " + attempts + "         " + bonus + "        " + (activeLevel + 1));
+            infoText.setText("  " + attempts + "          " + bonus + "        " + (activeLevel + 1));
         infoText.setFont(font2); 
         infoText.setFill(Color.WHITE);
         infoText.setX(20 * App.section_width + 5);

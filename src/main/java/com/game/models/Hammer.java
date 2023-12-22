@@ -17,7 +17,10 @@ public class Hammer {
     private double hammerWidth = 2 * App.section_width;
     private double hammerHeight = 2 * App.section_height;
 
+    Group root;
+
     public Hammer(double x, double y, Group root) {
+        this.root = root;
         hammer = new ImageView(hammerImg);
         hammer.setCache(true);
         hammer.setFitWidth(hammerWidth);
@@ -44,7 +47,7 @@ public class Hammer {
         }
     }
 
-    public void clear(Group root) {
+    public void clear() {
         root.getChildren().removeAll(hammer, rect);
     }
 

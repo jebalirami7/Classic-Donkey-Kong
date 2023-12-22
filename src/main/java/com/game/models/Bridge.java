@@ -1,5 +1,7 @@
 package main.java.com.game.models;
 
+import java.util.ArrayList;
+
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -12,19 +14,26 @@ public class Bridge {
     private double y_pos;
     private double length;
     private Rectangle top;
+    private Color color;
+
+    private ArrayList<Line> lines;
+
+    private Group root;
 
 
-    public Bridge(double x_pos, double y_pos, double length, Group root) {
+    public Bridge(double x_pos, double y_pos, double length, Color color, Group root) {
+        this.color = color;
+        this.root = root;
         this.x_pos = x_pos * App.section_width;
         this.y_pos = y_pos;
         this.length = length;
-        this.top = draw(root);
+        lines = new ArrayList<Line>();
+        this.top = draw();
     }
 
 
-    private Rectangle draw(Group root) {
+    private Rectangle draw() {
         double line_width = App.section_width * 6 / 35;
-        Color color = Color.rgb(225, 51, 129);
 
         for(int i=0; i<this.length; i++) {
             double bot_coord = this.y_pos + App.section_height;
@@ -50,6 +59,11 @@ public class Bridge {
             line4.setStrokeWidth(line_width);
 
             root.getChildren().addAll(line1, line2, line3, line4);
+
+            lines.add(line1);
+            lines.add(line2);
+            lines.add(line3);
+            lines.add(line4);
         }
 
         Rectangle topLine = new Rectangle(x_pos, y_pos, this.length * App.section_width, 2);
@@ -64,6 +78,14 @@ public class Bridge {
     public Rectangle getTop() {
         return top;
     }
+
+    public void clear() {
+        for(Line line:lines) {
+            root.getChildren().remove(line);
+        }
+        root.getChildren().remove(top);
+    }
+
 
 
 }

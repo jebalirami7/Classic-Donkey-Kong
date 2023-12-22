@@ -39,6 +39,8 @@ public class Mario {
     private Rectangle hammerBox;
     private Rectangle bottom;
 
+    Group root;
+
     public Mario(double x, double y, Group root) {
         image = new ImageView(standing);
         image.setCache(true);
@@ -63,6 +65,7 @@ public class Mario {
         hammerBox = new Rectangle(0,0);
         hammerBox.setFill(Color.TRANSPARENT);
         root.getChildren().add(hammerBox);
+        this.root = root;
     }
 
 
@@ -83,6 +86,8 @@ public class Mario {
         hammerPos = 1;
         maxHammer = 450;
         image.setImage(standing);
+        root.getChildren().removeAll(image, hitbox, bottom, hammerBox, rect);
+        root.getChildren().addAll(image, hitbox, bottom, hammerBox, rect);
     }
 
     
@@ -301,7 +306,7 @@ public class Mario {
     }
 
   
-    public void clear(Group root) {
+    public void clear() {
         root.getChildren().removeAll(image, hitbox, bottom, hammerBox, rect);
     }
 

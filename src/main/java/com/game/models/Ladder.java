@@ -1,5 +1,7 @@
 package main.java.com.game.models;
 
+import java.util.ArrayList;
+
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -12,16 +14,22 @@ public class Ladder {
     private double length;
     private Rectangle body;
 
+    private ArrayList<Line> lines;
+
+    private Group root;
+
 
     public Ladder(double x_pos, double y_pos, double length, Group root) {
+        this.root = root;
         this.x_pos = x_pos * App.section_width;
         this.y_pos = y_pos;
         this.length = length;
-        this.body = draw(root);
+        lines = new ArrayList<Line>();
+        this.body = draw();
     }
 
 
-    private Rectangle draw(Group root) {
+    private Rectangle draw() {
         double line_width = App.section_width * 3 / 35;
         Color color = Color.LIGHTBLUE;
         double lad_height = 0.6;
@@ -46,6 +54,10 @@ public class Ladder {
             line3.setStrokeWidth(line_width);
 
             root.getChildren().addAll(line1, line2, line3);
+
+            lines.add(line1);
+            lines.add(line2);
+            lines.add(line3);
         }
 
         Rectangle body = new Rectangle(this.x_pos, this.y_pos - App.section_height, App.section_width, lad_height * this.length * App.section_height + App.section_height);
@@ -64,6 +76,13 @@ public class Ladder {
 
     public double getLength() {
         return length;
+    }
+
+    public void clear() {
+        for(Line line:lines) {
+            root.getChildren().remove(line);
+        }
+        root.getChildren().remove(body);
     }
 
 }
