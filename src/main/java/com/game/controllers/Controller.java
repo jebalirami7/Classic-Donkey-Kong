@@ -141,10 +141,10 @@ public class Controller  implements Initializable   {
         Canvas canvas = new Canvas(App.width, App.height);
         root.getChildren().add(canvas);
         GraphicsContext  gc = canvas.getGraphicsContext2D();
-        Scene scene = new Scene(root); 
+        Scene gameScene = new Scene(root); 
 
         Stage stage = (Stage) container.getScene().getWindow();
-        stage.setScene(scene);
+        stage.setScene(gameScene);
         stage.show();
 
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
@@ -153,11 +153,11 @@ public class Controller  implements Initializable   {
         
         stage.setX(centerX);
         stage.setY(centerY);
-        stage.setScene(scene);
+        stage.setScene(gameScene);
 
-
-        Game game = new Game(root, player, gc , scene);
-        game.run(gc, scene);
+        Scene menuScene = container.getScene();
+        Game game = new Game(root, player, gc, gameScene, menuScene);
+        game.run(gc);
     }
 
 
@@ -182,6 +182,7 @@ public class Controller  implements Initializable   {
                 try {
                     if (e.getCode() == KeyCode.ENTER) {
                         popup.hide();
+                        showPlayers = false;
                         if (textField.getText().equals("")) throw new EmptyNameException();
                         Player player = new Player(textField.getText(), 0);
                         SaveData.write(player);
@@ -207,7 +208,7 @@ public class Controller  implements Initializable   {
             @Override
             public void handle(KeyEvent e) {
                 KeyCode key = e.getCode();
-                if (key == KeyCode.ESCAPE || key == KeyCode.LEFT) {
+                if (key == KeyCode.LEFT || key == KeyCode.ESCAPE) {
                     popup.hide();
                     showError = false;
                     showPlayers = false;
@@ -301,6 +302,7 @@ public class Controller  implements Initializable   {
                 if (selectedPlayer != null) {
                     System.out.println("Starting game with: " + selectedPlayer.getName());
                     popup.hide();
+                    showPlayers = false;
                     newGame(selectedPlayer);
 
                 }

@@ -8,15 +8,15 @@ import javafx.scene.canvas.GraphicsContext;
 public class Game {
 
     private Partie partie;
+    private Scene gameScene;
 
-    public Game(Group root, Player player, GraphicsContext gc, Scene scene) {
-        partie = new Partie(root, player);
+    public Game(Group root, Player player, GraphicsContext gc, Scene gameScene, Scene menuScene) {
+        this.gameScene = gameScene;
+        partie = new Partie(root, player, menuScene);
     }
 
-    public void run (GraphicsContext gc, Scene scene) {
-
-        partie.createPartie( gc, scene );
-
+    public void run (GraphicsContext gc) {
+        partie.createPartie(gc, gameScene);
     }
     
     

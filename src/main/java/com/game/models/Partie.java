@@ -9,8 +9,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
@@ -20,6 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import main.java.com.game.App;
@@ -92,7 +97,10 @@ public class Partie {
     Music gameOverAudio;
     Music gameAudio;
 
-    public Partie(Group root, Player p) {
+    Scene menuScene;
+
+    public Partie(Group root, Player p, Scene menuScene) {
+        this.menuScene = menuScene;
         this.root = root;
         this.p = p;
         score = 0;
@@ -465,14 +473,14 @@ public class Partie {
         }
     }
     private void handleMenuItemAction(int selectedIndex) {
-        if (selectedIndex == 0 && menuItems.length == 2 || selectedIndex == 1 && menuItems.length == 3) {
+        if (selectedIndex == 1 && menuItems.length == 3 || selectedIndex == 2 && menuItems.length == 4) {
             System.out.println(selectedIndex);
             gameTimeLine.playFromStart();
             paused = false;
             menuText.setText("");
             root.getChildren().remove(root.getChildren().size() - 1);
             restartGame();
-        } else if (selectedIndex == 0 && menuItems.length == 3) {
+        } else if (selectedIndex == 0 && menuItems.length == 4) {
             root.getChildren().remove(root.getChildren().size() - 1);
             if (victory) {
                 activeLevel++;
@@ -482,9 +490,24 @@ public class Partie {
             gameTimeLine.play();
             paused = false;
             menuText.setText("");
+        } else if (selectedIndex == menuItems.length - 3) {
+            System.out.println("back to main menu");
+            backToMenu();
         } else if (selectedIndex == menuItems.length - 1) {
             Platform.exit();
         }
+    }
+
+
+    private void backToMenu() {
+        Stage stage = (Stage) root.getScene().getWindow();
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        double centerX = screenBounds.getMinX() + (screenBounds.getWidth() - App.width) / 2;
+        double centerY = screenBounds.getMinY() + (screenBounds.getHeight() - App.height) / 2;
+        stage.setX(centerX);
+        stage.setY(centerY);
+        stage.setScene(menuScene);
+        stage.show();
     }
 
 
@@ -500,6 +523,9 @@ public class Partie {
         text.setFill(Color.WHITE);
         vbox.getChildren().add(text);
 
+        Label mainMenuLabel = new Label("MAIN MENU");
+        mainMenuLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
+        mainMenuLabel.setStyle("-fx-text-fill: WHITE;");
         Label resumeLabel = new Label("RESUME");
         resumeLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
         resumeLabel.setStyle("-fx-text-fill: WHITE;");
@@ -514,13 +540,13 @@ public class Partie {
         exitLabel.setStyle("-fx-text-fill: WHITE;");
 
         if (s == "Game Paused") {
-            menuItems = new Label[]{resumeLabel, replayLabel, exitLabel};
+            menuItems = new Label[]{resumeLabel, mainMenuLabel, replayLabel, exitLabel};
             vbox.getChildren().add(resumeLabel);
         } else if (s == "You Win") {
-            menuItems = new Label[]{nextLevelLabel, replayLabel, exitLabel};
+            menuItems = new Label[]{nextLevelLabel, mainMenuLabel, replayLabel, exitLabel};
             vbox.getChildren().add(nextLevelLabel);
         } else {
-            menuItems = new Label[]{replayLabel, exitLabel};
+            menuItems = new Label[]{mainMenuLabel, replayLabel, exitLabel};
         }
 
         selectedIndex = 0;
@@ -534,10 +560,10 @@ public class Partie {
 
         Platform.runLater(() -> {
             vbox.setLayoutX((App.width - text.getLayoutBounds().getWidth()) / 2 - 30);
-            vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + nextLevelLabel.getLayoutBounds().getHeight() + resumeLabel.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight())) / 2 - 30);
+            vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + nextLevelLabel.getLayoutBounds().getHeight() + mainMenuLabel.getLayoutBounds().getHeight() + resumeLabel.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight())) / 2 - 30);
         });
         
-        vbox.getChildren().addAll(replayLabel, exitLabel);
+        vbox.getChildren().addAll(mainMenuLabel, replayLabel, exitLabel);
         return vbox;
     }
 
