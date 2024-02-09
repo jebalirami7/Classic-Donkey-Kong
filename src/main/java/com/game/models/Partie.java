@@ -9,14 +9,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
@@ -88,7 +85,7 @@ public class Partie {
     Text menuText = new Text();
 
     private int selectedIndex = 0;
-    private Label[] menuItems;
+    private Text[] menuItems;
 
     Pair<Integer, Integer> playerPosition = new Pair<>(7 * App.section_width, (int) App.height - 6 * App.section_height);
 
@@ -99,6 +96,10 @@ public class Partie {
 
     Scene menuScene;
 
+    Font font = Font.font("Arial", App.section_width * 50 / 35);
+    Font font1 = Font.font("Arial", App.section_width * 80 / 35);
+    Font font2 = Font.font("Arial", App.section_width * 28 / 35);
+    
     public Partie(Group root, Player p, Scene menuScene) {
         this.menuScene = menuScene;
         this.root = root;
@@ -466,15 +467,16 @@ public class Partie {
     private void updateSelection() {
         for (int i = 0; i < menuItems.length; i++) {
             if (i == selectedIndex) {
-                menuItems[i].setStyle("-fx-text-fill: blue; -fx-font-weight: bold;");
+                menuItems[i].setFill(Color.BLUE);
+                menuItems[i].setStyle("-fx-font-weight: bold;");
             } else {
-                menuItems[i].setStyle("-fx-text-fill: white;");
+                menuItems[i].setFill(Color.WHITE);
+                menuItems[i].setStyle("-fx-font-weight: normal;");
             }
         }
     }
     private void handleMenuItemAction(int selectedIndex) {
         if (selectedIndex == 1 && menuItems.length == 3 || selectedIndex == 2 && menuItems.length == 4) {
-            System.out.println(selectedIndex);
             gameTimeLine.playFromStart();
             paused = false;
             menuText.setText("");
@@ -519,59 +521,49 @@ public class Partie {
         
         Text text = new Text();
         text.setText(s);
-        text.setFont(Font.font("Arial", App.section_width * 80 / 35)); 
+        text.setFont(font1); 
         text.setFill(Color.WHITE);
         vbox.getChildren().add(text);
 
-        Label mainMenuLabel = new Label("MAIN MENU");
-        mainMenuLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
-        mainMenuLabel.setStyle("-fx-text-fill: WHITE;");
-        Label resumeLabel = new Label("RESUME");
-        resumeLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
-        resumeLabel.setStyle("-fx-text-fill: WHITE;");
-        Label nextLevelLabel = new Label("NEXT LEVEL");
-        nextLevelLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
-        nextLevelLabel.setStyle("-fx-text-fill: WHITE;");
-        Label replayLabel = new Label("REPLAY");
-        replayLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
-        replayLabel.setStyle("-fx-text-fill: WHITE;");
-        Label exitLabel = new Label("EXIT");
-        exitLabel.setFont(Font.font("Arial", App.section_width * 50 / 35));
-        exitLabel.setStyle("-fx-text-fill: WHITE;");
+        Text mainMenuLabel = new Text("MAIN MENU");
+        mainMenuLabel.setFont(font);
+        Text resumeLabel = new Text("RESUME");
+        resumeLabel.setFont(font);
+        Text nextLevelLabel = new Text("NEXT LEVEL");
+        nextLevelLabel.setFont(font);
+        Text replayLabel = new Text("REPLAY");
+        replayLabel.setFont(font);
+        Text exitLabel = new Text("EXIT");
+        exitLabel.setFont(font);
 
         if (s == "Game Paused") {
-            menuItems = new Label[]{resumeLabel, mainMenuLabel, replayLabel, exitLabel};
+            menuItems = new Text[]{resumeLabel, mainMenuLabel, replayLabel, exitLabel};
             vbox.getChildren().add(resumeLabel);
         } else if (s == "You Win") {
-            menuItems = new Label[]{nextLevelLabel, mainMenuLabel, replayLabel, exitLabel};
+            menuItems = new Text[]{nextLevelLabel, mainMenuLabel, replayLabel, exitLabel};
             vbox.getChildren().add(nextLevelLabel);
         } else {
-            menuItems = new Label[]{mainMenuLabel, replayLabel, exitLabel};
+            menuItems = new Text[]{mainMenuLabel, replayLabel, exitLabel};
         }
 
         selectedIndex = 0;
         updateSelection();
-        for (Label menuItem : menuItems) {
+        for (Text menuItem : menuItems) {
             menuItem.setFocusTraversable(true);
         }
         menuItems[selectedIndex].requestFocus(); 
 
         vbox.setAlignment(Pos.CENTER);
 
-        Platform.runLater(() -> {
-            vbox.setLayoutX((App.width - text.getLayoutBounds().getWidth()) / 2 - 30);
-            vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + nextLevelLabel.getLayoutBounds().getHeight() + mainMenuLabel.getLayoutBounds().getHeight() + resumeLabel.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight())) / 2 - 30);
-        });
-        
+        vbox.setLayoutX((App.width - text.getLayoutBounds().getWidth()) / 2 - 30);
+        vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + nextLevelLabel.getLayoutBounds().getHeight() + mainMenuLabel.getLayoutBounds().getHeight() + resumeLabel.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight())) / 2 - 30);
+                
         vbox.getChildren().addAll(mainMenuLabel, replayLabel, exitLabel);
         return vbox;
     }
 
 
     public void drawText() {
-        Font font = Font.font("Arial", App.section_width * 50 / 35);
-        Font font2 = Font.font("Arial", App.section_width * 28 / 35);
-
         scoreText.setText("I•" + score);
         scoreText.setFont(font); 
         scoreText.setFill(Color.WHITE);
