@@ -91,7 +91,6 @@ public final class FireBall extends Enemy {
             if (rect.getBoundsInParent().intersects(lad.getBody().getBoundsInParent()) && !climbing && !checkLad && lad.getLength() >= 3) {
                 checkLad = true;
                 alreadyCollided = true;
-                // System.out.println(this.rect.getLayoutX() + " " + this.rect.getLayoutY());
                 if (new Random().nextInt(1) == 0) {
                     climbing = true;
                     y_change = -App.section_height * 4 / 29;

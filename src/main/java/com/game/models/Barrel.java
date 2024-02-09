@@ -104,7 +104,6 @@ public final class Barrel extends Enemy {
                 if (below.getBoundsInParent().intersects(ladTopLine.getBoundsInParent()) && !falling && !checkLad) {
                     checkLad = true;
                     alreadyCollided = true;
-                    System.out.println(below.getBoundsInParent().intersects(ladBody.getBoundsInParent()));
                     if (new Random().nextInt(1) == 0) {
                         falling = true;
                         Timeline barrelFaTimeline = new Timeline(new KeyFrame(Duration.millis(5), event -> {

@@ -228,7 +228,6 @@ public class Partie {
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         
         loseAudio.stop();
-
         gameAudio.play();
 
         // Check Victory
@@ -245,6 +244,10 @@ public class Partie {
             barrelTime = barrelSpawnTime - barrelCount;
             Barrel barrel = new Barrel(App.width * 270 / 1120, row6_top - (double)App.section_height * 50 / 29, root);
             barrels.add(barrel);
+            if (activeLevel >= 1) {
+                FireBall fireBall = new FireBall(5 * App.section_width, App.height - 4 * App.section_height, root);
+                fireBalls.add(fireBall);
+            }
         }
 
         Iterator<Barrel> barrelIterator = barrels.iterator();
@@ -318,7 +321,6 @@ public class Partie {
 
 
     private void resetGame() {
-        
         if (victory) {
             highScore = Math.max(highScore, score + bonus);
             if (p.getScore() < highScore){
@@ -582,18 +584,18 @@ public class Partie {
         symbolText.setX(20 * App.section_width);
         symbolText.setY(5 * App.section_height);
 
-        columnsText.setText("  ♥     BONUS     L ");
+        columnsText.setText("  ♥      BONUS       L ");
         columnsText.setFont(font2); 
         columnsText.setFill(Color.WHITE);
         columnsText.setX(20 * App.section_width + 5);
         columnsText.setY(4 * App.section_height);
 
         if (bonus >= 10000)
-            infoText.setText("  " + attempts + "       " + bonus + "       " + (activeLevel + 1));
+            infoText.setText("  " + attempts + "       " + bonus + "        " + (activeLevel + 1));
         else if (bonus >= 1000)
-            infoText.setText("  " + attempts + "        " + bonus + "        " + (activeLevel + 1));
+            infoText.setText("  " + attempts + "        " + bonus + "         " + (activeLevel + 1));
         else 
-            infoText.setText("  " + attempts + "          " + bonus + "        " + (activeLevel + 1));
+            infoText.setText("  " + attempts + "          " + bonus + "         " + (activeLevel + 1));
         infoText.setFont(font2); 
         infoText.setFill(Color.WHITE);
         infoText.setX(20 * App.section_width + 5);

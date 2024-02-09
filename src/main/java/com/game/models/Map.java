@@ -56,7 +56,6 @@ public class Map {
     
     public Map(Group root) {
         this.root = root;
-        System.out.println(App.section_height + " " + App.section_width);
     }
 
 
@@ -107,7 +106,7 @@ public class Map {
                 List.of(3 * App.section_width, row6_top + App.section_height), 
                 List.of(3 * App.section_width, row4_top + App.section_height)
             ),
-            List.of(10, row6_y - 5* App.section_height, 5)
+            List.of(10, row6_y - 7 * App.section_height, 3)
         ));
 
         // Create level 2 
@@ -156,7 +155,7 @@ public class Map {
                 List.of(3 * App.section_width, row6_top + App.section_height), 
                 List.of(3 * App.section_width, row4_top + App.section_height)
             ),
-            List.of(10, row6_y - 5* App.section_height, 5)
+            List.of(10, row6_y - 7 * App.section_height, 3)
         ));
     }
 
@@ -199,9 +198,10 @@ public class Map {
         targetRect.setY(levels.get(activeLevel).getTarget().get(1));
         targetRect.setWidth(levels.get(activeLevel).getTarget().get(2) * App.section_width);
         targetRect.setHeight(50);
+        targetRect.setFill(Color.TRANSPARENT);
 
         // Add all elements to the root (to be seen)
-        root.getChildren().addAll(barrelImgView, dk, peach);
+        root.getChildren().addAll(barrelImgView, dk, peach, targetRect);
         
     }
 
