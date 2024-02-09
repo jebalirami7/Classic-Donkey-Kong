@@ -1,3 +1,4 @@
 .vscode/
 bin/
 lib/
+src/main/resources/media/data.txt

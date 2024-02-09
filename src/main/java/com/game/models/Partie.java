@@ -323,6 +323,7 @@ public class Partie {
     private void resetGame() {
         if (victory) {
             highScore = Math.max(highScore, score + bonus);
+            System.out.println("New High Score: " + highScore + " by " + p.getName());
             if (p.getScore() < highScore){
                 p.setScore(highScore);
                 SaveData.update(p.getName(), p.getScore());

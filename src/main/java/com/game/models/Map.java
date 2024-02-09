@@ -198,10 +198,9 @@ public class Map {
         targetRect.setY(levels.get(activeLevel).getTarget().get(1));
         targetRect.setWidth(levels.get(activeLevel).getTarget().get(2) * App.section_width);
         targetRect.setHeight(50);
-        targetRect.setFill(Color.TRANSPARENT);
 
         // Add all elements to the root (to be seen)
-        root.getChildren().addAll(barrelImgView, dk, peach, targetRect);
+        root.getChildren().addAll(barrelImgView, dk, peach);
         
     }
 
